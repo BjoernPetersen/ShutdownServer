@@ -1,6 +1,6 @@
 # ShutdownServer ![CircleCI](https://img.shields.io/circleci/project/github/BjoernPetersen/ShutdownServer.svg) ![GitHub](https://img.shields.io/github/license/BjoernPetersen/ShutdownServer.svg) ![GitHub (pre-)release](https://img.shields.io/github/release/BjoernPetersen/ShutdownServer/all.svg)
 
-HTTP server for Windows providing a /shutdown endpoint to shut down the machine.
+HTTP server for Windows providing a `/shutdown` endpoint to shut down the machine.
 
 ## Installation
 The easiest way to install and use the program is to install it via [scoop](https://scoop.sh/):
@@ -35,7 +35,7 @@ The server accepts a POST request on the `/shutdown` path with a `token` header.
 
 ## Configuration
 You can configure the port, token and shutdown time in a `config/.env` file.
-An example file can be found in `src/main/resources/config/.env.example`.
+An example file can be found [here](src/main/resources/config/.env.example).
 
 Key | Description 
 ---- | ----
