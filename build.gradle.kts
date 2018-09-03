@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.dokka") version "0.9.17"
 }
 
-version = "0.2.0-SNAPSHOT"
+version = "0.2.0"
 
 application {
     mainClassName = "net.bjoernpetersen.shutdown.Main"
