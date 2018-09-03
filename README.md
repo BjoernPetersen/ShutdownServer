@@ -2,6 +2,16 @@
 
 HTTP server for Windows providing a /shutdown endpoint to shut down the machine.
 
+## Installation
+The easiest way to install and use the program is to install it via [scoop](https://scoop.sh/):
+```
+scoop bucket add misc https://github.com/BjoernPetersen/scoop-misc-bucket
+scoop install ShutdownServer
+```
+
+You'll need to setup autostart yourself. The easiest way is to type `shell:common startup`
+in the search or the "Run" prompt (`Win+R`) and insert a shortcut there.
+
 ## Compilation
 Compile using [Gradle](https://gradle.org/) and Java 1.8:
 ```
