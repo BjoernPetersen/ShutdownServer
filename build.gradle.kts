@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.dokka") version "0.9.17"
 }
 
-project.version = "0.1.0"
+version = "0.2.0-SNAPSHOT"
 
 application {
     mainClassName = "net.bjoernpetersen.shutdown.Main"
@@ -55,6 +55,12 @@ val dokka by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
     // TODO maybe switch to javadoc (or another) format
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
+}
+
+val jar by tasks.getting(Jar::class) {
+    java {
+        sourceSets["main"].resources.exclude("**/.env")
+    }
 }
 
 repositories {
