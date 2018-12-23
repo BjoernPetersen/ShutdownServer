@@ -26,7 +26,7 @@ class Api @Inject constructor(
                 .registerHandlers(versionManager)
                 .registerHandlers(shutdownManager)
 
-            server.requestHandler(router::accept).listen(result::handle)
+            server.requestHandler(router).listen(result::handle)
         }, {
             if (it.succeeded()) {
                 future.complete()
