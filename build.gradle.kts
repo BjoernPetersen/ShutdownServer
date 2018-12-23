@@ -71,6 +71,14 @@ tasks {
         outputFormat = "html"
         outputDirectory = "$buildDir/javadoc"
     }
+
+    "processResources"(ProcessResources::class) {
+        filesMatching("**/version.properties") {
+            filter {
+                it.replace("%APP_VERSION%", version.toString())
+            }
+        }
+    }
 }
 
 repositories {

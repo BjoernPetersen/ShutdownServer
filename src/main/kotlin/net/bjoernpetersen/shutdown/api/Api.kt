@@ -9,6 +9,7 @@ import javax.inject.Inject
 
 class Api @Inject constructor(
     private val serverConfig: ServerConfig,
+    private val versionManager: VersionManager,
     private val shutdownManager: ShutdownManager) : AbstractVerticle() {
 
     override fun start(future: Future<Void>) {
@@ -21,7 +22,9 @@ class Api @Inject constructor(
             // Register auth handler for all routes
             router.route().handler(AuthHandler(serverConfig))
 
-            shutdownManager.registerHandlers(router)
+            router
+                .registerHandlers(versionManager)
+                .registerHandlers(shutdownManager)
 
             server.requestHandler(router::accept).listen(result::handle)
         }, {
@@ -32,6 +35,10 @@ class Api @Inject constructor(
             }
         })
     }
+}
+
+private fun Router.registerHandlers(endpointManager: EndpointManager): Router = this.apply {
+    endpointManager.registerHandlers(this)
 }
 
 interface EndpointManager {
