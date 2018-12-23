@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package net.bjoernpetersen.shutdown.api
 
 import io.vertx.core.Vertx

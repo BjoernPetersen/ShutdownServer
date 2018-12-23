@@ -17,6 +17,7 @@ class ShutdownTest : AuthorizedEndpointTest {
     override val path = "/shutdown"
     override val method: HttpMethod = HttpMethod.POST
 
+    @Suppress("DEPRECATION")
     @Test
     fun killerCalled(vertx: Vertx, serverConfig: ServerConfig, instance: Instance) {
         val context = VertxTestContext()
