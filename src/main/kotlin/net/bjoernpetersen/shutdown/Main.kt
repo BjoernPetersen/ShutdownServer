@@ -13,8 +13,10 @@ fun main(args: Array<String>) {
         .build()
     val vertx = Vertx.vertx()
     vertx.deployVerticle(instance.api, DeploymentOptions()) {
-        if (!it.succeeded()) {
-            val logger = KotlinLogging.logger {}
+        val logger = KotlinLogging.logger {}
+        if (it.succeeded()) {
+            logger.info { "Running..." }
+        } else {
             logger.error { "Initialization error: ${it.cause().message}" }
             vertx.close()
             System.exit(1)
