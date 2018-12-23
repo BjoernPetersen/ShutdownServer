@@ -6,6 +6,8 @@ plugins {
     kotlin("jvm") version Version.KOTLIN
     kotlin("kapt") version Version.KOTLIN
     id("org.jetbrains.dokka") version Version.DOKKA
+
+    idea
 }
 
 version = "1.1.0"
@@ -73,4 +75,10 @@ tasks {
 
 repositories {
     jcenter()
+}
+
+idea {
+    module {
+        isDownloadJavadoc = true
+    }
 }
