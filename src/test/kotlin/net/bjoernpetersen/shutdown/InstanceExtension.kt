@@ -3,6 +3,7 @@ package net.bjoernpetersen.shutdown
 import com.jdiazcano.cfg4k.providers.ConfigProvider
 import com.jdiazcano.cfg4k.providers.bind
 import net.bjoernpetersen.shutdown.api.Api
+import net.bjoernpetersen.shutdown.exec.KillerModule
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
@@ -15,7 +16,7 @@ class InstanceExtension : ParameterResolver, BeforeEachCallback {
     override fun beforeEach(context: ExtensionContext?) {
         instance = DaggerInstance.builder()
             .configModule(ConfigModule("testConfig.yml"))
-            .killer(TestKiller())
+            .killerModule(KillerModule(TestKiller()))
             .build()
     }
 

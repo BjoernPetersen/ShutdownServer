@@ -2,22 +2,42 @@ package net.bjoernpetersen.shutdown.api
 
 import io.vertx.core.http.HttpMethod
 import io.vertx.ext.web.Router
-import net.bjoernpetersen.shutdown.Killer
+import io.vertx.ext.web.RoutingContext
+import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.ShutdownConfig
+import net.bjoernpetersen.shutdown.exec.Killer
 import javax.inject.Inject
 
 class ShutdownManager @Inject constructor(
     private val killer: Killer,
     private val shutdownConfig: ShutdownConfig) : EndpointManager {
 
+    private val logger = KotlinLogging.logger { }
     override fun registerHandlers(router: Router) {
+        if (!shutdownConfig.enable) {
+            logger.info { "Shutdown endpoints are disabled!" }
+            return
+        }
         router.route(HttpMethod.POST, "/shutdown").handler { ctx ->
             ctx.response().setStatusCode(204).end()
-            killer.shutDown(shutdownConfig.time)
+            killer.shutDown(ctx.time())
         }
         router.route(HttpMethod.DELETE, "/shutdown").handler { ctx ->
             killer.abort()
             ctx.response().setStatusCode(204).end()
         }
+        router.route(HttpMethod.POST, "/reboot").handler { ctx ->
+            ctx.response().setStatusCode(204).end()
+            killer.reboot(ctx.time())
+        }
+        router.route(HttpMethod.DELETE, "/reboot").handler { ctx ->
+            killer.abort()
+            ctx.response().setStatusCode(204).end()
+        }
+    }
+
+    private fun RoutingContext.time(): Int {
+        val time = request().params()["time"]
+        return time?.toIntOrNull() ?: shutdownConfig.time
     }
 }

@@ -45,5 +45,7 @@ out/
 # Dotenv (legacy)
 **/.env
 
-# Config file
+# Config files
 /config.yml
+/shutdown.yml
+/custom/

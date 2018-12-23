@@ -17,6 +17,7 @@ interface ServerConfig {
 }
 
 interface ShutdownConfig {
+    val enable: Boolean
     val time: Int
 }
 

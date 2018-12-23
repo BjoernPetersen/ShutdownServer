@@ -1,13 +1,21 @@
 package net.bjoernpetersen.shutdown
 
+import net.bjoernpetersen.shutdown.exec.Killer
+
 class TestKiller : Killer {
     var isKilled = false
+        private set
+    var isRebooted = false
         private set
     var isAborted = false
         private set
 
     override fun shutDown(time: Int) {
         isKilled = true
+    }
+
+    override fun reboot(time: Int) {
+        isRebooted = true
     }
 
     override fun abort() {
