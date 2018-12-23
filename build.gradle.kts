@@ -3,8 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "1.2.61"
-    id("org.jetbrains.dokka") version "0.9.17"
+    kotlin("jvm") version Version.KOTLIN
+    kotlin("kapt") version Version.KOTLIN
+    id("org.jetbrains.dokka") version Version.DOKKA
 }
 
 version = "1.1.0"
@@ -15,26 +16,38 @@ application {
 
 dependencies {
     // Basics
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib-jdk8", version = Version.KOTLIN))
     implementation(
         group = "io.github.microutils",
         name = "kotlin-logging",
         version = Version.KOTLIN_LOGGING)
+    runtime(group = "org.slf4j", name = "slf4j-simple", version = Version.SLF4J)
 
     // Config
     implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-core", version = Version.CFG4K)
     implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-yaml", version = Version.CFG4K)
+    implementation(kotlin("reflect", version = Version.KOTLIN))
 
+    // Vertx
     implementation(group = "io.vertx", name = "vertx-web", version = Version.VERTX)
     implementation(group = "io.vertx", name = "vertx-lang-kotlin", version = Version.VERTX) {
         exclude(group = "org.jetbrains.kotlin")
     }
 
+    // Dependency injection
+    implementation(
+        group = "com.google.dagger",
+        name = "dagger",
+        version = Version.DAGGER)
+    kapt(
+        group = "com.google.dagger",
+        name = "dagger-compiler",
+        version = Version.DAGGER)
+
     testRuntime(
         group = "org.junit.jupiter",
         name = "junit-jupiter-engine",
         version = Version.JUNIT)
-    testRuntime(group = "org.slf4j", name = "slf4j-simple", version = Version.SLF4J)
     testImplementation(
         group = "org.junit.jupiter",
         name = "junit-jupiter-api",

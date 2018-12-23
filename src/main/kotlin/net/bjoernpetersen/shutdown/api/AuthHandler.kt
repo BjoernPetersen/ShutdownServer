@@ -5,12 +5,14 @@ import io.vertx.ext.web.RoutingContext
 import net.bjoernpetersen.shutdown.ServerConfig
 import net.bjoernpetersen.shutdown.decodeBase64
 
-class AuthHandler(private val serverConfig: ServerConfig) : Handler<RoutingContext> {
+class AuthHandler(serverConfig: ServerConfig) : Handler<RoutingContext> {
+    private val token: String = serverConfig.token
+
     override fun handle(ctx: RoutingContext) {
         val token: String? = ctx.request().getHeader("token")
         when {
             token.isNullOrEmpty() -> ctx.fail(401)
-            serverConfig.token != token?.decode() -> ctx.fail(403)
+            this.token != token.decode() -> ctx.fail(403)
             else -> ctx.next()
         }
     }

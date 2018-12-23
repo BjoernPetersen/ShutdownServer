@@ -1,12 +1,10 @@
 package net.bjoernpetersen.shutdown
 
 import com.jdiazcano.cfg4k.loaders.EnvironmentConfigLoader
-import com.jdiazcano.cfg4k.loaders.PropertyConfigLoader
 import com.jdiazcano.cfg4k.providers.CachedConfigProvider
 import com.jdiazcano.cfg4k.providers.ConfigProvider
 import com.jdiazcano.cfg4k.providers.DefaultConfigProvider
 import com.jdiazcano.cfg4k.providers.OverrideConfigProvider
-import com.jdiazcano.cfg4k.providers.get
 import com.jdiazcano.cfg4k.sources.ClasspathConfigSource
 import com.jdiazcano.cfg4k.sources.FileConfigSource
 import com.jdiazcano.cfg4k.yaml.YamlConfigLoader
@@ -22,7 +20,7 @@ interface ShutdownConfig {
     val time: Int
 }
 
-fun readConfig(filePath: String = "config.yml"): ConfigProvider {
+fun readConfig(filePath: String): ConfigProvider {
     val logger = KotlinLogging.logger {}
 
     val defaultsSource = ClasspathConfigSource("/config.yml")

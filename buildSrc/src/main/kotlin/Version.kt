@@ -6,6 +6,7 @@ object Version {
     const val SLF4J = "1.7.25"
 
     const val VERTX = "3.5.4"
+    const val DAGGER = "2.20"
 
     const val JUNIT = "5.3.1"
 }

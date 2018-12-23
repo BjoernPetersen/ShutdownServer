@@ -1,40 +1,43 @@
 package net.bjoernpetersen.shutdown.api
 
-import com.jdiazcano.cfg4k.providers.ConfigProvider
-import com.jdiazcano.cfg4k.providers.bind
 import io.vertx.core.AbstractVerticle
-import io.vertx.core.http.HttpMethod
+import io.vertx.core.Future
 import io.vertx.core.http.HttpServerOptions
 import io.vertx.ext.web.Router
-import net.bjoernpetersen.shutdown.Killer
 import net.bjoernpetersen.shutdown.ServerConfig
-import net.bjoernpetersen.shutdown.ShutdownConfig
-import net.bjoernpetersen.shutdown.WinKiller
+import javax.inject.Inject
 
-class Api(
-    private val configProvider: ConfigProvider,
-    private val killer: Killer = WinKiller()) : AbstractVerticle() {
+class Api @Inject constructor(
+    private val serverConfig: ServerConfig,
+    private val shutdownManager: ShutdownManager) : AbstractVerticle() {
 
-    override fun start() {
-        val vertx = getVertx()!!
+    override fun start(future: Future<Void>) {
+        vertx.executeBlocking({ result: Future<in Any> ->
+            val server = vertx.createHttpServer(HttpServerOptions()
+                .setPort(serverConfig.port))
 
-        val serverConfig = configProvider.bind<ServerConfig>("server")
+            val router = Router.router(vertx)!!
 
-        val server = vertx.createHttpServer(HttpServerOptions()
-            .setPort(serverConfig.port))
+            // Register auth handler for all routes
+            router.route().handler(AuthHandler(serverConfig))
 
-        val shutdownConfig = configProvider.bind<ShutdownConfig>("shutdown")
+            shutdownManager.registerHandlers(router)
 
-        val router = Router.router(vertx)!!
-
-        // Register auth handler for all routes
-        router.route().handler(AuthHandler(serverConfig))
-
-        router.route(HttpMethod.POST, "/shutdown").handler { ctx ->
-            ctx.response().setStatusCode(204).end()
-            killer.shutDown(shutdownConfig.time)
-        }
-        server.requestHandler(router::accept).listen()
+            server.requestHandler(router::accept).listen(result::handle)
+        }, {
+            if (it.succeeded()) {
+                future.complete()
+            } else {
+                future.fail(it.cause())
+            }
+        })
     }
 }
 
+interface EndpointManager {
+
+    /**
+     * Register handlers for one or multiple routes.
+     */
+    fun registerHandlers(router: Router)
+}
