@@ -5,11 +5,13 @@ package net.bjoernpetersen.shutdown
 import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx
 import mu.KotlinLogging
+import net.bjoernpetersen.shutdown.exec.KillerModule
+import net.bjoernpetersen.shutdown.exec.WinKiller
 
 fun main(args: Array<String>) {
     val instance = DaggerInstance.builder()
         .configModule(ConfigModule())
-        .killer(WinKiller())
+        .killerModule(KillerModule())
         .build()
     val vertx = Vertx.vertx()
     vertx.deployVerticle(instance.api, DeploymentOptions()) {

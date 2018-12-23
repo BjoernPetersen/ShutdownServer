@@ -1,0 +1,18 @@
+# Example file for a custom endpoint definition.
+# Actual definitions go in a "custom" directory in the working directory.
+# The path of the endpoint equals the filename (without the extension).
+# You can define get, post, put and/or delete operations.
+# See the Readme for possible actions.
+get:
+  - cmd: doAnything -flag
+    # Print "Result: " and the output of the first command (0-indexed)
+  - echo: Result: <output.0>
+post:
+    # Use a query parameter
+  - cmd: doSomeOtherThing -arg <query.myarg>
+    # Specify the HTTP status code in case the cmd exits with code 0
+    code: 201
+delete:
+  - cmd: deleteSomeResource <body.id>
+    # Send a 204 no content response
+  - content: false

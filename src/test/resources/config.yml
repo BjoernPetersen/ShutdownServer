@@ -1,6 +1,7 @@
 server:
-  port: 1234
+  port: 12345
   token: test
 
 shutdown:
+  enable: true
   time: 120

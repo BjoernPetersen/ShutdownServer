@@ -7,6 +7,8 @@ object Version {
 
     const val VERTX = "3.6.2"
     const val DAGGER = "2.20"
+    const val JACKSON = "2.9.8"
+    const val STRING_TEMPLATE = "4.1"
 
     const val JUNIT = "5.3.1"
 }

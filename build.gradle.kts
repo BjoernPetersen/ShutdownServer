@@ -29,6 +29,19 @@ dependencies {
     implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-core", version = Version.CFG4K)
     implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-yaml", version = Version.CFG4K)
     implementation(kotlin("reflect", version = Version.KOTLIN))
+    implementation(
+        group = "com.fasterxml.jackson.core",
+        name = "jackson-databind",
+        version = Version.JACKSON)
+    implementation(
+        group = "com.fasterxml.jackson.module",
+        name = "jackson-module-kotlin",
+        version = Version.JACKSON)
+    implementation(
+        group = "com.fasterxml.jackson.dataformat",
+        name = "jackson-dataformat-yaml",
+        version = Version.JACKSON)
+    implementation(group = "org.antlr", name = "ST4", version = Version.STRING_TEMPLATE)
 
     // Vertx
     implementation(group = "io.vertx", name = "vertx-web", version = Version.VERTX)

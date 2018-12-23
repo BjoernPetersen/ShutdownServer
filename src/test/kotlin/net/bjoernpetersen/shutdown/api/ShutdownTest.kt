@@ -27,7 +27,7 @@ class ShutdownTest : AuthorizedEndpointTest {
             .putHeader("token", serverConfig.token.encodeBase64())
             .handler {
                 context.verify {
-                    assertTrue(it.statusCode() in 201..299)
+                    assertTrue(it.statusCode() in 200..299)
                     val killer = instance.killer as TestKiller
                     assertTrue(killer.isKilled)
                     context.completeNow()

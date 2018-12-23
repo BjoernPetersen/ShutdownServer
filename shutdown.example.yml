@@ -1,0 +1,8 @@
+# You don't have to define all commands.
+# Undefined commands will fall back to the default implementation.
+shutdown:
+  cmd: shutdown -s -t <time>
+reboot:
+  cmd: shutdown -r -t <time>
+abort:
+  cmd: shutdown -a
