@@ -39,7 +39,8 @@ scripts at `build/install/ShutdownServer/bin`:
 
 ## API
 
-The server accepts a POST request on the `/shutdown` path with a `token` header.
+The server accepts a POST request on the `/shutdown` path with a `token` header,
+Base64-encoded with UTF-8.
 
 ## Configuration
 

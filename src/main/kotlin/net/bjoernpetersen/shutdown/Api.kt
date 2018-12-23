@@ -27,7 +27,7 @@ class Api(
                 val token: String? = ctx.request().getHeader("token")
                 when {
                     token.isNullOrEmpty() -> ctx.fail(401)
-                    serverConfig.token != token -> ctx.fail(403)
+                    serverConfig.token != token!!.decode() -> ctx.fail(403)
                     else -> {
                         ctx.response().setStatusCode(204).end()
                         killer.shutDown(shutdownConfig.time)
@@ -36,5 +36,10 @@ class Api(
             }
         server.requestHandler(router::accept).listen()
     }
+}
 
+private fun String.decode(): String? = try {
+    decodeBase64()
+} catch (e: IllegalArgumentException) {
+    null
 }
