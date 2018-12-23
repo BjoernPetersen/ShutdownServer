@@ -1,14 +1,17 @@
-package net.bjoernpetersen.shutdown
+package net.bjoernpetersen.shutdown.api
 
-import com.jdiazcano.cfg4k.providers.bind
 import io.vertx.core.Vertx
+import io.vertx.core.http.HttpClient
+import io.vertx.core.http.HttpMethod
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
-import net.bjoernpetersen.shutdown.api.Api
+import net.bjoernpetersen.shutdown.Instance
+import net.bjoernpetersen.shutdown.InstanceExtension
+import net.bjoernpetersen.shutdown.ServerConfig
+import net.bjoernpetersen.shutdown.encodeBase64
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
@@ -17,46 +20,58 @@ import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.fail
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 
-@ExtendWith(VertxExtension::class)
-class TestApi {
+@ExtendWith(InstanceExtension::class, VertxExtension::class)
+interface AuthorizedEndpointTest {
 
-    private var port: Int = -1
-    private lateinit var token: String
-    private lateinit var killer: TestKiller
+    val path: String
+    val method: HttpMethod
 
     @BeforeEach
-    fun initVertx(vertx: Vertx) {
-        val config = readConfig("testConfig.yml")
-        val serverConfig = config.bind<ServerConfig>("server")
-        this.port = serverConfig.port
-        this.token = serverConfig.token
+    fun initVertx(vertx: Vertx, api: Api) {
+        val context = VertxTestContext()
 
-        killer = TestKiller()
-        val lock = ReentrantLock()
-        val condition = lock.newCondition()!!
-        lock.withLock {
-            vertx.deployVerticle(Api(config, killer)) {
-                assumeTrue(it.succeeded())
-                lock.withLock {
-                    condition.signal()
-                }
+        vertx.deployVerticle(api) {
+            if (it.succeeded()) {
+                context.completeNow()
+            } else {
+                context.failNow(it.cause())
             }
-            condition.await()
+        }
+
+        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS))
+        if (context.failed()) {
+            fail(context.causeOfFailure())
+        }
+    }
+
+    @AfterEach
+    fun destroyVertx(vertx: Vertx) {
+        val context = VertxTestContext()
+
+        vertx.close {
+            if (it.succeeded()) {
+                context.completeNow()
+            } else {
+                context.failNow(it.cause())
+            }
+        }
+
+        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS))
+        if (context.failed()) {
+            fail(context.causeOfFailure())
         }
     }
 
     @Test
-    fun noToken(vertx: Vertx) {
+    fun noToken(vertx: Vertx, serverConfig: ServerConfig, instance: Instance) {
         val context = VertxTestContext()
 
         vertx.createHttpClient()
-            .post(port, "localhost", "/shutdown") {
+            .request(serverConfig)
+            .handler {
                 context.verify {
                     assertEquals(401, it.statusCode())
-                    assertFalse(killer.isKilled)
                     context.completeNow()
                 }
             }
@@ -69,16 +84,15 @@ class TestApi {
     }
 
     @Test
-    fun emptyToken(vertx: Vertx) {
+    fun emptyToken(vertx: Vertx, serverConfig: ServerConfig, instance: Instance) {
         val context = VertxTestContext()
 
         vertx.createHttpClient()
-            .post(port, "localhost", "/shutdown")
+            .request(serverConfig)
             .putHeader("token", "")
             .handler {
                 context.verify {
                     assertEquals(401, it.statusCode())
-                    assertFalse(killer.isKilled)
                     context.completeNow()
                 }
             }
@@ -91,19 +105,19 @@ class TestApi {
     }
 
     @TestFactory
-    fun invalidToken(vertx: Vertx): List<DynamicTest> {
+    fun invalidToken(vertx: Vertx, serverConfig: ServerConfig,
+        instance: Instance): List<DynamicTest> {
         val client = vertx.createHttpClient()
         return listOf("literallyinvalid", "wrong".encodeBase64())
             .map { token ->
                 dynamicTest(token) {
                     val context = VertxTestContext()
                     client
-                        .post(port, "localhost", "/shutdown")
+                        .request(serverConfig)
                         .putHeader("token", "invalid")
                         .handler {
                             context.verify {
                                 assertEquals(403, it.statusCode())
-                                assertFalse(killer.isKilled)
                                 context.completeNow()
                             }
                         }
@@ -118,16 +132,15 @@ class TestApi {
     }
 
     @Test
-    fun correctToken(vertx: Vertx) {
+    fun correctToken(vertx: Vertx, serverConfig: ServerConfig, instance: Instance) {
         val context = VertxTestContext()
 
         vertx.createHttpClient()
-            .post(port, "localhost", "/shutdown")
-            .putHeader("token", token.encodeBase64())
+            .request(serverConfig)
+            .putHeader("token", serverConfig.token.encodeBase64())
             .handler {
                 context.verify {
-                    assertEquals(204, it.statusCode())
-                    assertTrue(killer.isKilled)
+                    assertTrue(it.statusCode() in 201..299)
                     context.completeNow()
                 }
             }
@@ -139,4 +152,6 @@ class TestApi {
         }
     }
 
+    fun HttpClient.request(serverConfig: ServerConfig) =
+        request(method, serverConfig.port, "localhost", path)
 }

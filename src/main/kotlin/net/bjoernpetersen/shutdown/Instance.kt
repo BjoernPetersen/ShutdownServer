@@ -11,4 +11,5 @@ interface Instance {
 
     val api: Api
     val config: ConfigProvider
+    val killer: Killer
 }
