@@ -1,9 +1,13 @@
 package net.bjoernpetersen.shutdown
 
+import com.jdiazcano.cfg4k.providers.bind
+import com.jdiazcano.cfg4k.providers.get
 import io.vertx.core.Vertx
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,15 +26,16 @@ class TestApi {
 
     @BeforeEach
     fun initVertx(vertx: Vertx) {
-        val (token, time, port) = readConfig()
-        this.token = token
-        this.port = port
+        val config = readConfig("testConfig.yml")
+        val serverConfig = config.bind<ServerConfig>("server")
+        this.port = serverConfig.port
+        this.token = serverConfig.token
 
         killer = TestKiller()
         val lock = ReentrantLock()
         val condition = lock.newCondition()!!
         lock.withLock {
-            vertx.deployVerticle(Api(token, time, port, killer)) {
+            vertx.deployVerticle(Api(config, killer)) {
                 assumeTrue(it.succeeded())
                 lock.withLock {
                     condition.signal()

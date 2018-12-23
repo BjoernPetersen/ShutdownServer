@@ -1,0 +1,6 @@
+server:
+  port: 1234
+  token: test
+
+shutdown:
+  time: 120

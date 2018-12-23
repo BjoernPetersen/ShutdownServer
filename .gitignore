@@ -23,7 +23,7 @@
 hs_err_pid*
 
 .gradle
-/build/
+build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -42,5 +42,8 @@ out/
 # Vertx
 .vertx
 
-# Dotenv
+# Dotenv (legacy)
 **/.env
+
+# Config file
+/config.yml

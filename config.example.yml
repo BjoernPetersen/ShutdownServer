@@ -1,0 +1,9 @@
+server:
+  # The port on which to serve the API on
+  port: 8080
+  # A token to secure the endpoints with
+  token:
+
+shutdown:
+  # The time until the machine is actually shut down after calling the shutdown endpoint
+  time: 30

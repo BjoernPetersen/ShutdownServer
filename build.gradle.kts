@@ -1,5 +1,4 @@
-import io.github.cdimascio.dotenv.Dotenv
-import io.github.cdimascio.dotenv.dotenv
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -8,58 +7,54 @@ plugins {
     id("org.jetbrains.dokka") version "0.9.17"
 }
 
-version = "1.0.0"
+version = "1.1.0"
 
 application {
     mainClassName = "net.bjoernpetersen.shutdown.Main"
 }
 
 dependencies {
-    compile(kotlin("stdlib-jdk8"))
-    compile("org.slf4j:slf4j-simple:1.7.25")
-    compile("com.google.guava:guava:26.0-jre")
+    // Basics
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(
+        group = "io.github.microutils",
+        name = "kotlin-logging",
+        version = Version.KOTLIN_LOGGING)
 
-    compile("io.github.cdimascio:java-dotenv:3.1.2")
+    // Config
+    implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-core", version = Version.CFG4K)
+    implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-yaml", version = Version.CFG4K)
 
-    compile("io.vertx:vertx-web:3.5.3")
-    compile("io.vertx:vertx-lang-kotlin:3.5.3")
-
-    testCompile(group = "org.junit.jupiter", name = "junit-jupiter-api", version = "5.2.0")
-    testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-engine",
-        version = "5.2.0")
-    testCompile(kotlin("test-junit", "1.2.61"))
-    testCompile("io.vertx:vertx-junit5:3.5.3")
-}
-
-buildscript {
-    repositories {
-        jcenter()
+    implementation(group = "io.vertx", name = "vertx-web", version = Version.VERTX)
+    implementation(group = "io.vertx", name = "vertx-lang-kotlin", version = Version.VERTX) {
+        exclude(group = "org.jetbrains.kotlin")
     }
-    dependencies {
-        classpath("io.github.cdimascio:java-dotenv:3.1.2")
+
+    testRuntime(
+        group = "org.junit.jupiter",
+        name = "junit-jupiter-engine",
+        version = Version.JUNIT)
+    testRuntime(group = "org.slf4j", name = "slf4j-simple", version = Version.SLF4J)
+    testImplementation(
+        group = "org.junit.jupiter",
+        name = "junit-jupiter-api",
+        version = Version.JUNIT)
+    testImplementation(group = "io.vertx", name = "vertx-junit5", version = Version.VERTX)
+}
+
+tasks {
+    withType(KotlinCompile::class) {
+        kotlinOptions.jvmTarget = "1.8"
     }
-}
 
-val compileKotlin by tasks.getting(KotlinCompile::class) {
-    kotlinOptions.jvmTarget = "1.8"
-}
-val compileTestKotlin by tasks.getting(KotlinCompile::class) {
-    kotlinOptions.jvmTarget = "1.8"
-}
+    "test"(Test::class) {
+        useJUnitPlatform()
+    }
 
-val test by tasks.getting(org.gradle.api.tasks.testing.Test::class) {
-    useJUnitPlatform()
-}
-
-val dokka by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
-    // TODO maybe switch to javadoc (or another) format
-    outputFormat = "html"
-    outputDirectory = "$buildDir/javadoc"
-}
-
-val jar by tasks.getting(Jar::class) {
-    java {
-        sourceSets["main"].resources.exclude("**/.env")
+    "dokka"(DokkaTask::class) {
+        // TODO maybe switch to javadoc (or another) format
+        outputFormat = "html"
+        outputDirectory = "$buildDir/javadoc"
     }
 }
 
