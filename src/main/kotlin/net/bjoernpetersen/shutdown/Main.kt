@@ -5,9 +5,6 @@ package net.bjoernpetersen.shutdown
 import io.github.cdimascio.dotenv.dotenv
 import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx
-import javafx.application.Application
-import javafx.application.Platform
-import javafx.stage.Stage
 import org.slf4j.LoggerFactory
 import kotlin.system.exitProcess
 
