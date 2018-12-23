@@ -11,20 +11,6 @@ import javafx.stage.Stage
 import org.slf4j.LoggerFactory
 import kotlin.system.exitProcess
 
-class MainApplication : Application() {
-    override fun start(primaryStage: Stage) {
-        Platform.setImplicitExit(false)
-
-        val (token, time, port) = readConfig()
-
-        LoggerFactory.getLogger(MainApplication::class.java)
-            .info("Starting server on port $port")
-
-        val vertx = Vertx.vertx()
-        vertx.deployVerticle(Api(token, time, port), DeploymentOptions())
-    }
-}
-
 fun readConfig(): Triple<String, Int, Int> {
     val env = dotenv {
         directory = "config"
@@ -51,5 +37,11 @@ fun readConfig(): Triple<String, Int, Int> {
 }
 
 fun main(args: Array<String>) {
-    Application.launch(MainApplication::class.java)
+    val (token, time, port) = readConfig()
+
+    LoggerFactory.getLogger("net.bjoernpetersen.shutdown.Main")
+        .info("Starting server on port $port")
+
+    val vertx = Vertx.vertx()
+    vertx.deployVerticle(Api(token, time, port), DeploymentOptions())
 }

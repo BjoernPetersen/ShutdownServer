@@ -8,14 +8,8 @@ import io.vertx.ext.web.Router
 class Api(private val token: String,
     private val shutdownTime: Int,
     private val port: Int,
-    private val killer: Killer = WinKiller(),
-    private val confirmer: Confirmer = FxConfirmer()) :
+    private val killer: Killer = WinKiller()) :
     AbstractVerticle() {
-
-    private fun abort(killer: Killer, exit: Boolean = false) {
-        killer.abort()
-        confirmer.abortInfo(exit)
-    }
 
     override fun start() {
         val vertx = getVertx()!!
@@ -30,17 +24,6 @@ class Api(private val token: String,
                     else -> {
                         ctx.response().setStatusCode(204).end()
                         killer.shutDown(shutdownTime)
-                        confirmer.confirm(shutdownTime) {
-                            when (it) {
-                                Confirmer.Result.ABORT -> abort(killer)
-                                Confirmer.Result.EXIT -> {
-                                    abort(killer, true)
-                                    vertx.close()
-                                }
-                                else -> {
-                                }
-                            }
-                        }
                     }
                 }
             }

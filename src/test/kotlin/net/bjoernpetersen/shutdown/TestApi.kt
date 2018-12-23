@@ -30,7 +30,7 @@ class TestApi {
         val lock = ReentrantLock()
         val condition = lock.newCondition()!!
         lock.withLock {
-            vertx.deployVerticle(Api(token, time, port, killer, TestConfirmer())) {
+            vertx.deployVerticle(Api(token, time, port, killer)) {
                 assumeTrue(it.succeeded())
                 lock.withLock {
                     condition.signal()
