@@ -5,6 +5,7 @@ import io.vertx.core.Future
 import io.vertx.core.http.HttpServerOptions
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.BodyHandler
+import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.ServerConfig
 import javax.inject.Inject
 
@@ -14,8 +15,12 @@ class Api @Inject constructor(
     private val shutdownManager: ShutdownManager,
     private val customManager: CustomManager) : AbstractVerticle() {
 
+    private val logger = KotlinLogging.logger {}
+
     override fun start(future: Future<Void>) {
         vertx.executeBlocking({ result: Future<in Any> ->
+            logger.info { "Binding server on port ${serverConfig.port}" }
+
             val server = vertx.createHttpServer(HttpServerOptions()
                 .setPort(serverConfig.port))
 
