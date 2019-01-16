@@ -109,6 +109,7 @@ class CustomManager @Inject constructor() : EndpointManager {
                             .endNullable(result.message)
                     } else {
                         val message = result.message
+                        @Suppress("UNCHECKED_CAST")
                         val outputs = (env["output"] as? Map<String, Any>)
                             ?.toMutableMap() ?: HashMap()
                         outputs[index.toString()] = message ?: ""
