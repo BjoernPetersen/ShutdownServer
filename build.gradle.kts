@@ -2,12 +2,12 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.github.ben-manes.versions") version Version.VERSIONS
+    id("com.github.ben-manes.versions") version Plugin.VERSIONS
 
     application
-    kotlin("jvm") version Version.KOTLIN
-    kotlin("kapt") version Version.KOTLIN
-    id("org.jetbrains.dokka") version Version.DOKKA
+    kotlin("jvm") version Plugin.KOTLIN
+    kotlin("kapt") version Plugin.KOTLIN
+    id("org.jetbrains.dokka") version Plugin.DOKKA
 
     idea
 }
@@ -20,34 +20,34 @@ application {
 
 dependencies {
     // Basics
-    implementation(kotlin("stdlib-jdk8", version = Version.KOTLIN))
+    implementation(kotlin("stdlib-jdk8", version = Lib.KOTLIN))
     implementation(
         group = "io.github.microutils",
         name = "kotlin-logging",
-        version = Version.KOTLIN_LOGGING)
-    runtime(group = "org.slf4j", name = "slf4j-simple", version = Version.SLF4J)
+        version = Lib.KOTLIN_LOGGING)
+    runtime(group = "org.slf4j", name = "slf4j-simple", version = Lib.SLF4J)
 
     // Config
-    implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-core", version = Version.CFG4K)
-    implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-yaml", version = Version.CFG4K)
-    implementation(kotlin("reflect", version = Version.KOTLIN))
+    implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-core", version = Lib.CFG4K)
+    implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-yaml", version = Lib.CFG4K)
+    implementation(kotlin("reflect", version = Lib.KOTLIN))
     implementation(
         group = "com.fasterxml.jackson.core",
         name = "jackson-databind",
-        version = Version.JACKSON)
+        version = Lib.JACKSON)
     implementation(
         group = "com.fasterxml.jackson.module",
         name = "jackson-module-kotlin",
-        version = Version.JACKSON)
+        version = Lib.JACKSON)
     implementation(
         group = "com.fasterxml.jackson.dataformat",
         name = "jackson-dataformat-yaml",
-        version = Version.JACKSON)
-    implementation(group = "org.antlr", name = "ST4", version = Version.STRING_TEMPLATE)
+        version = Lib.JACKSON)
+    implementation(group = "org.antlr", name = "ST4", version = Lib.STRING_TEMPLATE)
 
     // Vertx
-    implementation(group = "io.vertx", name = "vertx-web", version = Version.VERTX)
-    implementation(group = "io.vertx", name = "vertx-lang-kotlin", version = Version.VERTX) {
+    implementation(group = "io.vertx", name = "vertx-web", version = Lib.VERTX)
+    implementation(group = "io.vertx", name = "vertx-lang-kotlin", version = Lib.VERTX) {
         exclude(group = "org.jetbrains.kotlin")
     }
 
@@ -55,21 +55,21 @@ dependencies {
     implementation(
         group = "com.google.dagger",
         name = "dagger",
-        version = Version.DAGGER)
+        version = Lib.DAGGER)
     kapt(
         group = "com.google.dagger",
         name = "dagger-compiler",
-        version = Version.DAGGER)
+        version = Lib.DAGGER)
 
     testRuntime(
         group = "org.junit.jupiter",
         name = "junit-jupiter-engine",
-        version = Version.JUNIT)
+        version = Lib.JUNIT)
     testImplementation(
         group = "org.junit.jupiter",
         name = "junit-jupiter-api",
-        version = Version.JUNIT)
-    testImplementation(group = "io.vertx", name = "vertx-junit5", version = Version.VERTX)
+        version = Lib.JUNIT)
+    testImplementation(group = "io.vertx", name = "vertx-junit5", version = Lib.VERTX)
 }
 
 tasks {
