@@ -56,7 +56,7 @@ data class EchoAction(val echo: String, val code: Int = 200) : CustomAction() {
 
 data class NoContentAction(val content: Boolean) : CustomAction() {
     init {
-        if(content) {
+        if (content) {
             throw IOException("NoContent action must be 'content: false'")
         }
     }
@@ -77,7 +77,7 @@ data class ActionResult(val message: String?, val code: Int) {
     fun succeeded() = code in 200..299
 }
 
-private class CustomActionModule() : SimpleModule("CustomActionDeserializer") {
+private class CustomActionModule : SimpleModule("CustomActionDeserializer") {
     init {
         addDeserializer(CustomAction::class.java, CustomActionDeserializer())
     }
