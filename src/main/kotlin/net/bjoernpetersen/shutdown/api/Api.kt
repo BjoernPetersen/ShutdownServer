@@ -1,8 +1,10 @@
 package net.bjoernpetersen.shutdown.api
 
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
 import io.vertx.core.http.HttpServerOptions
+import io.vertx.core.json.Json
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.BodyHandler
 import mu.KotlinLogging
@@ -20,6 +22,10 @@ class Api @Inject constructor(
     override fun start(future: Future<Void>) {
         vertx.executeBlocking({ result: Future<in Any> ->
             logger.info { "Binding server on port ${serverConfig.port}" }
+
+            sequenceOf(Json.mapper, Json.prettyMapper).forEach {
+                it.registerModule(KotlinModule())
+            }
 
             val server = vertx.createHttpServer(HttpServerOptions()
                 .setPort(serverConfig.port))

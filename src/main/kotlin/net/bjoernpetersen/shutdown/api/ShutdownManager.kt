@@ -1,6 +1,7 @@
 package net.bjoernpetersen.shutdown.api
 
 import io.vertx.core.http.HttpMethod
+import io.vertx.core.json.Json
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
 import mu.KotlinLogging
@@ -17,6 +18,9 @@ class ShutdownManager @Inject constructor(
         if (!shutdownConfig.enable) {
             logger.info { "Shutdown endpoints are disabled!" }
             return
+        }
+        router.route(HttpMethod.GET, "/shutdown").handler { ctx ->
+            ctx.response().end(Json.encode(killer.state))
         }
         router.route(HttpMethod.POST, "/shutdown").handler { ctx ->
             ctx.response().setStatusCode(204).end()

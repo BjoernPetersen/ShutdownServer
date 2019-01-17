@@ -3,6 +3,7 @@ package net.bjoernpetersen.shutdown.exec
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.vertx.core.Future
 import java.io.File
+import java.time.Instant
 
 private data class CustomDescriptor(
     val shutdown: CustomAction?,
@@ -13,7 +14,13 @@ private class CustomKiller(
     private val fallback: Killer,
     private val descriptor: CustomDescriptor) : Killer {
 
+    override var state: KillerState = Unscheduled()
+        private set
+
     override fun shutDown(time: Int) {
+        if (state.isScheduled) return
+        state = Scheduled(Instant.now().plusSeconds(time.toLong()), false)
+
         if (descriptor.shutdown == null) {
             return fallback.shutDown(time)
         }
@@ -23,6 +30,9 @@ private class CustomKiller(
     }
 
     override fun reboot(time: Int) {
+        if (state.isScheduled) return
+        state = Scheduled(Instant.now().plusSeconds(time.toLong()), true)
+
         if (descriptor.reboot == null) {
             return fallback.reboot(time)
         }
@@ -35,8 +45,9 @@ private class CustomKiller(
         if (descriptor.abort == null) {
             return fallback.abort()
         }
-
         descriptor.abort.performSync(emptyMap())
+
+        state = Unscheduled()
     }
 
     private fun timeEnv(time: Int) = mapOf("time" to time.toString())

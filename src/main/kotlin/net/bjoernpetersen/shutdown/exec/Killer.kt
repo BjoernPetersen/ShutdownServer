@@ -2,8 +2,11 @@ package net.bjoernpetersen.shutdown.exec
 
 import mu.KotlinLogging
 import java.io.IOException
+import java.time.Instant
 
 interface Killer {
+    val state: KillerState
+
     /**
      * Schedules a system shutdown.
      *
@@ -35,11 +38,14 @@ private class DelegateKiller(
 
     private val logger = KotlinLogging.logger {}
 
-    private var scheduled = false
+    override var state: KillerState = Unscheduled()
+        private set
+    private val isScheduled: Boolean
+        get() = state.isScheduled
 
     override fun shutDown(time: Int) {
-        if (scheduled) return
-        scheduled = true
+        if (isScheduled) return
+        state = Scheduled(Instant.now().plusSeconds(time.toLong()), false)
         try {
             shutDownDelegate(time)
         } catch (e: IOException) {
@@ -48,8 +54,8 @@ private class DelegateKiller(
     }
 
     override fun reboot(time: Int) {
-        if (scheduled) return
-        scheduled = true
+        if (isScheduled) return
+        state = Scheduled(Instant.now().plusSeconds(time.toLong()), true)
         try {
             rebootDelegate(time)
         } catch (e: IOException) {
@@ -60,10 +66,10 @@ private class DelegateKiller(
     override fun abort() {
         try {
             abortDelegate()
-            scheduled = false
         } catch (e: IOException) {
             logger.error(e) {}
         }
+        state = Unscheduled()
     }
 }
 
