@@ -45,10 +45,13 @@ scripts at `build/install/ShutdownServer/bin`:
 All operations require a `token` header, Base64-encoded with UTF-8.
 The token is configured in the config.yml ([see example file](config.example.yml)).
 
-By default, the server accepts a `POST` request on the `/shutdown` or `/reboot` path 
-to trigger a shutdown/reboot. You can optionally provide a `time` query parameter.
+By default, the server accepts a `POST` request on the `/shutdown` path 
+to trigger a shutdown/reboot.
+You can optionally provide a `time` query parameter to set a custom delay in seconds.
+If you don't provide the `time` parameter, the default delay from the config will be used.
+To trigger a reboot instead of a shutdown, use the `reboot=true` query parameter.
 
-Sending a `DELETE` request on either endpoint will abort a scheduled shutdown/reboot.
+Sending a `DELETE` request on the `/shutdown` endpoint will abort any scheduled shutdown/reboot.
 
 ### Custom shutdown command
 

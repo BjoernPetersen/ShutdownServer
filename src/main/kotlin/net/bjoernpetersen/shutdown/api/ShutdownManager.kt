@@ -24,17 +24,11 @@ class ShutdownManager @Inject constructor(
         }
         router.route(HttpMethod.POST, "/shutdown").handler { ctx ->
             ctx.response().setStatusCode(204).end()
-            killer.shutDown(ctx.time())
+            val reboot = ctx.queryParam("reboot")?.firstOrNull()?.toBoolean() ?: false
+            if (reboot) killer.reboot(ctx.time())
+            else killer.shutDown(ctx.time())
         }
         router.route(HttpMethod.DELETE, "/shutdown").handler { ctx ->
-            killer.abort()
-            ctx.response().setStatusCode(204).end()
-        }
-        router.route(HttpMethod.POST, "/reboot").handler { ctx ->
-            ctx.response().setStatusCode(204).end()
-            killer.reboot(ctx.time())
-        }
-        router.route(HttpMethod.DELETE, "/reboot").handler { ctx ->
             killer.abort()
             ctx.response().setStatusCode(204).end()
         }
