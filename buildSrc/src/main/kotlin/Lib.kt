@@ -1,6 +1,5 @@
 object Lib {
     const val KOTLIN = Plugin.KOTLIN
-    const val DOKKA = Plugin.DOKKA
     const val CFG4K = "0.9.0"
     const val KOTLIN_LOGGING = "1.6.22"
     const val SLF4J = "1.7.25"
