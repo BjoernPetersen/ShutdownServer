@@ -2,6 +2,8 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("com.github.ben-manes.versions") version Version.VERSIONS
+
     application
     kotlin("jvm") version Version.KOTLIN
     kotlin("kapt") version Version.KOTLIN
