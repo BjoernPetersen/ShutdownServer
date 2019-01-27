@@ -1,0 +1,9 @@
+test_task:
+  container:
+    image: openjdk:8-jdk-slim
+  exec_script: chmod +x gradlew
+  gradle_cache:
+    folder: ~/.gradle
+    fingerprint_script: cat build.gradle.kts buildSrc/src/main/kotlin/Plugin.kt buildSrc/src/main/kotlin/Lib.kt
+    populate_script: ./gradlew dependencies
+  test_script: ./gradlew test
