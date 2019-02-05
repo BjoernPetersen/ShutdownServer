@@ -26,7 +26,7 @@ dependencies {
         name = "kotlin-logging",
         version = Lib.KOTLIN_LOGGING)
     implementation(group = "org.slf4j", name = "slf4j-api", version = Lib.SLF4J)
-    runtime(group = "org.slf4j", name = "slf4j-simple", version = Lib.SLF4J)
+    implementation(group = "ch.qos.logback", name = "logback-classic", version = Lib.LOGBACK)
 
     // Config
     implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-core", version = Lib.CFG4K)
