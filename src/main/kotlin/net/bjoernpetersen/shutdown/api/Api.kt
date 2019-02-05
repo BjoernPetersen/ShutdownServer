@@ -43,7 +43,9 @@ class Api @Inject constructor(
                 .registerHandlers(customManager)
 
             router.route().failureHandler {
-                logger.error(it.failure()) { "Unhandled error" }
+                val failure = it.failure()
+                if (failure == null) it.next()
+                else logger.error(failure) { "Unhandled error" }
             }
 
             server.requestHandler(router).listen(result::handle)
