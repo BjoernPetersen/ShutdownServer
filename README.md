@@ -45,7 +45,7 @@ scripts at `build/install/ShutdownServer/bin`:
 All operations require a `token` header, Base64-encoded with UTF-8.
 The token is configured in the config.yml ([see example file](config.example.yml)).
 
-By default, the server accepts a `POST` request on the `/shutdown` path 
+By default, the server accepts a `POST` request on the `/shutdown` path
 to trigger a shutdown/reboot.
 You can optionally provide a `time` query parameter to set a custom delay in seconds.
 If you don't provide the `time` parameter, the default delay from the config will be used.
@@ -62,7 +62,7 @@ as demonstrated [in the example file](shutdown.example.yml).
 
 ### Custom operations
 
-You can define (nearly) arbitrary custom endpoints by 
+You can define (nearly) arbitrary custom endpoints by
 creating [definition files](custom.example.yml) in the `custom` directory.
 The file's name will serve as the path to the defined endpoint.
 
@@ -99,14 +99,14 @@ key | type | description | required
 ----|------|-------------|---------
 command | `array<string>` | The command and arguments you want to run | Yes
 code | `integer` | HTTP status code to send **if the command exits with code 0** | No; default: 200
-ignoreExitCode | `boolean` | Whether to ignore the command's exit code
+ignoreExitCode | `boolean` | Whether to ignore the command's exit code | No; default: false
 
-You may also use the short version of this action by specifying a command string 
+You may also use the short version of this action by specifying a command string
 as `cmd` instead of `command`. The command will be split by spaces.
 
 #### Template values
 
-You can use string templates (https://www.stringtemplate.org/) anywhere in your actions.
+You can use [string templates](https://www.stringtemplate.org/) anywhere in your actions.
 
 The following values are available:
 

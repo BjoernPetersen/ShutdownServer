@@ -34,3 +34,18 @@ jobs:
 
     - store_test_results:
         path: build/test-results
+
+  markdown_lint:
+    docker:
+      - image: 06kellyjac/markdownlint-cli:0.13.0-alpine
+    steps:
+      - checkout
+      - run: markdownlint README.md
+
+
+workflows:
+  version: 2
+  full_workflow:
+    jobs:
+      - markdown_lint
+      - build
