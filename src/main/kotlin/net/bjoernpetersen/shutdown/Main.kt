@@ -6,6 +6,7 @@ import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx
 import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.exec.KillerModule
+import kotlin.system.exitProcess
 
 fun main() {
     val instance = DaggerInstance.builder()
@@ -18,9 +19,9 @@ fun main() {
         if (it.succeeded()) {
             logger.info { "Running..." }
         } else {
-            logger.error { "Initialization error: ${it.cause().message}" }
+            logger.error(it.cause()) {}
             vertx.close()
-            System.exit(1)
+            exitProcess(1)
         }
     }
 }
