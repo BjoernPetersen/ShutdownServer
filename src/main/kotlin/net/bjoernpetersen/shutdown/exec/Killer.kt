@@ -11,7 +11,9 @@ interface Killer {
      * Schedules a system shutdown.
      *
      * If either this method or [reboot] has been called before and the operation was not
-     * aborted in the meantime, this method does nothing.
+     * aborted in the meantime, this method will abort the previous operation first, effectively
+     * overriding it.
+     *
      * @param time time in seconds
      */
     fun shutDown(time: Int)
@@ -20,7 +22,9 @@ interface Killer {
      * Schedules a system reboot.
      *
      * If either this method or [shutDown] has been called before and the operation was not
-     * aborted in the meantime, this method does nothing.
+     * aborted in the meantime, this method will abort the previous operation first, effectively
+     * overriding it.
+     *
      * @param time time in seconds
      */
     fun reboot(time: Int)
@@ -44,7 +48,7 @@ private class DelegateKiller(
         get() = state.isScheduled
 
     override fun shutDown(time: Int) {
-        if (isScheduled) return
+        if (isScheduled) abort()
         state = Scheduled(Instant.now().plusSeconds(time.toLong()), false)
         try {
             shutDownDelegate(time)
@@ -54,7 +58,7 @@ private class DelegateKiller(
     }
 
     override fun reboot(time: Int) {
-        if (isScheduled) return
+        if (isScheduled) abort()
         state = Scheduled(Instant.now().plusSeconds(time.toLong()), true)
         try {
             rebootDelegate(time)
