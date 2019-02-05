@@ -25,6 +25,7 @@ dependencies {
         group = "io.github.microutils",
         name = "kotlin-logging",
         version = Lib.KOTLIN_LOGGING)
+    implementation(group = "org.slf4j", name = "slf4j-api", version = Lib.SLF4J)
     runtime(group = "org.slf4j", name = "slf4j-simple", version = Lib.SLF4J)
 
     // Config
