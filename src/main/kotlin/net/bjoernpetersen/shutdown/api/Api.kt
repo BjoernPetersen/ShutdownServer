@@ -42,6 +42,10 @@ class Api @Inject constructor(
                 .registerHandlers(shutdownManager)
                 .registerHandlers(customManager)
 
+            router.route().failureHandler {
+                logger.error(it.failure()) { "Unhandled error" }
+            }
+
             server.requestHandler(router).listen(result::handle)
         }, {
             if (it.succeeded()) {

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.vertx.core.Future
+import mu.KotlinLogging
 import org.stringtemplate.v4.ST
 import java.io.IOException
 import kotlin.concurrent.thread
@@ -16,6 +17,8 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
 sealed class CustomAction {
+    protected val logger = KotlinLogging.logger {}
+
     abstract fun perform(future: Future<ActionResult>, env: Map<String, Any>)
 
     companion object {
@@ -26,11 +29,15 @@ sealed class CustomAction {
     }
 }
 
-data class CmdAction(val cmd: String, val code: Int? = null) : CustomAction() {
+data class CmdAction(
+    val command: List<String>,
+    val code: Int? = null,
+    val ignoreExitCode: Boolean = false) : CustomAction() {
+
     override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
-        val renderedCmd = cmd.renderTemplate(env)
+        val renderedCmd = command.map { it.renderTemplate(env) }
         val process = try {
-            ProcessBuilder(renderedCmd.split(' ')).start()
+            ProcessBuilder(renderedCmd).start()
         } catch (e: IOException) {
             return future.fail(e)
         }
@@ -41,9 +48,25 @@ data class CmdAction(val cmd: String, val code: Int? = null) : CustomAction() {
                     output.appendln(it)
                 }
             }
-            val resultCode = if (process.exitValue() == 0) code ?: 200 else 500
+            val resultCode = if (ignoreExitCode || process.exitValue() == 0) {
+                logger.debug { "Success." }
+                code ?: 200
+            } else {
+                logger.debug { "Failure with exit code: ${process.exitValue()}" }
+                500
+            }
+
             future.complete(ActionResult(output.toString(), resultCode))
         }
+    }
+}
+
+data class ShortCmdAction(val cmd: String,
+    val code: Int? = null,
+    val ignoreExitCode: Boolean = false) : CustomAction() {
+    private val delegate = CmdAction(cmd.split(' '), code, ignoreExitCode)
+    override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
+        delegate.perform(future, env)
     }
 }
 
