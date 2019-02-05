@@ -23,6 +23,7 @@ class ShutdownManager @Inject constructor(
             ctx.response().end(Json.encode(killer.state))
         }
         router.route(HttpMethod.POST, "/shutdown").handler { ctx ->
+            logger.info { "Authorized shutdown request by ${ctx.request().remoteAddress()}" }
             ctx.response().setStatusCode(204).end()
             val reboot = ctx.queryParam("reboot")?.firstOrNull()?.toBoolean() ?: false
             if (reboot) killer.reboot(ctx.time())
@@ -30,6 +31,7 @@ class ShutdownManager @Inject constructor(
         }
         router.route(HttpMethod.DELETE, "/shutdown").handler { ctx ->
             killer.abort()
+            logger.info { "Authorized abort request by ${ctx.request().remoteAddress()}" }
             ctx.response().setStatusCode(204).end()
         }
     }
