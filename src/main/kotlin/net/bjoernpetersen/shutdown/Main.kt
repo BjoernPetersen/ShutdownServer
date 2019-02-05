@@ -6,9 +6,8 @@ import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx
 import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.exec.KillerModule
-import net.bjoernpetersen.shutdown.exec.WinKiller
 
-fun main(args: Array<String>) {
+fun main() {
     val instance = DaggerInstance.builder()
         .configModule(ConfigModule())
         .killerModule(KillerModule())
