@@ -97,7 +97,7 @@ The output of this action is the `STDOUT` output of the process.
 
 key | type | description | required
 ----|------|-------------|---------
-command | `list<string>` | The command and arguments you want to run | Yes
+command | `array<string>` | The command and arguments you want to run | Yes
 code | `integer` | HTTP status code to send **if the command exits with code 0** | No; default: 200
 ignoreExitCode | `boolean` | Whether to ignore the command's exit code
 
