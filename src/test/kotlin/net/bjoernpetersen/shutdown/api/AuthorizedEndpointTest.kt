@@ -41,7 +41,9 @@ interface AuthorizedEndpointTest {
             }
         }
 
-        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS))
+        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS)) {
+            "Received no response within 5 seconds"
+        }
         if (context.failed()) {
             fail(context.causeOfFailure())
         }
@@ -59,7 +61,9 @@ interface AuthorizedEndpointTest {
             }
         }
 
-        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS))
+        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS)) {
+            "Received no response within 5 seconds"
+        }
         if (context.failed()) {
             fail(context.causeOfFailure())
         }
@@ -79,7 +83,9 @@ interface AuthorizedEndpointTest {
             }
             .end()
 
-        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS))
+        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS)) {
+            "Received no response within 5 seconds"
+        }
         if (context.failed()) {
             fail(context.causeOfFailure())
         }
@@ -100,7 +106,9 @@ interface AuthorizedEndpointTest {
             }
             .end()
 
-        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS))
+        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS)) {
+            "Received no response within 5 seconds"
+        }
         if (context.failed()) {
             fail(context.causeOfFailure())
         }
@@ -125,7 +133,9 @@ interface AuthorizedEndpointTest {
                         }
                         .end()
 
-                    assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS))
+                    assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS)) {
+                        "Received no response within 5 seconds"
+                    }
                     if (context.failed()) {
                         fail(context.causeOfFailure())
                     }
@@ -148,7 +158,9 @@ interface AuthorizedEndpointTest {
             }
             .end()
 
-        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS))
+        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS)) {
+            "Received no response within 5 seconds"
+        }
         if (context.failed()) {
             fail(context.causeOfFailure())
         }
