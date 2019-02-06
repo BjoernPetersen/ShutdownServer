@@ -42,7 +42,7 @@ class Api @Inject constructor(
                 .registerHandlers(shutdownManager)
                 .registerHandlers(customManager)
 
-            router.route().failureHandler {
+            router.errorHandler(500) {
                 val failure = it.failure()
                 if (failure == null) it.next()
                 else logger.error(failure) { "Unhandled error" }
