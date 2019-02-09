@@ -1,6 +1,8 @@
-module ShutdownServer {
+module net.bjoernpetersen.shutdownserver {
     requires kotlin.stdlib;
     requires kotlin.reflect;
+
+    requires org.slf4j;
     requires kotlin.logging;
     requires ch.qos.logback.core;
     requires ch.qos.logback.classic;
