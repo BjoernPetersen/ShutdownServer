@@ -14,7 +14,7 @@ import net.bjoernpetersen.shutdown.exec.CustomAction
 import net.bjoernpetersen.shutdown.exec.customEndpoint
 import org.stringtemplate.v4.misc.MultiMap
 import java.io.File
-import java.util.*
+import java.util.HashMap
 import javax.inject.Inject
 
 class CustomManager @Inject constructor() : EndpointManager {
@@ -69,7 +69,8 @@ class CustomManager @Inject constructor() : EndpointManager {
     }
 
     private fun MutableMap<String, Any>.putBodyValues(ctx: RoutingContext) {
-        put("body", BodyConverter.toMap(ctx.bodyAsJson))
+        if (ctx.body.length() > 0)
+            put("body", BodyConverter.toMap(ctx.bodyAsJson))
     }
 
     private fun bodyful(ctx: RoutingContext, actions: List<CustomAction>) {
@@ -93,7 +94,8 @@ class CustomManager @Inject constructor() : EndpointManager {
         ctx: RoutingContext,
         actions: List<CustomAction>,
         env: Map<String, Any>,
-        index: Int) {
+        index: Int
+    ) {
         val action = actions[index]
         ctx.vertx().executeBlocking({ future: Future<ActionResult> ->
             action.perform(future, env)
