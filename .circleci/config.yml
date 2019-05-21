@@ -1,40 +1,61 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+
+executors:
+  jdk:
     docker:
-    # specify the version you desire here
-    - image: openjdk:8-jdk-slim
-
-    working_directory: ~/repo
-
+      - image: openjdk:8-jdk-slim
     environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
+      GRADLE_OPTS: -Dorg.gradle.daemon=false
 
+commands:
+  with_cache:
+    parameters:
+      steps:
+        type: steps
     steps:
-    - checkout
-    - run: chmod +x gradlew
+      - restore_cache:
+          keys:
+            - v3-{{ checksum "build.gradle.kts" }}-{{ checksum "buildSrc/src/main/kotlin/Plugin.kt" }}-{{ checksum "buildSrc/src/main/kotlin/Lib.kt" }}
+            - v3-{{ checksum "build.gradle.kts" }}-{{ checksum "buildSrc/src/main/kotlin/Plugin.kt" }}
+            - v3-{{ checksum "build.gradle.kts" }}
+            - v3-
+      - steps: << parameters.steps >>
 
-    # Download and cache dependencies
-    - restore_cache:
-        keys:
-          - v2-dependencies-{{ checksum "build.gradle.kts" }}-{{ checksum "buildSrc/src/main/kotlin/Plugin.kt" }}-{{ checksum "buildSrc/src/main/kotlin/Lib.kt" }}
-          - v2-dependencies-{{ checksum "build.gradle.kts" }}-{{ checksum "buildSrc/src/main/kotlin/Plugin.kt" }}
-          - v2-dependencies-{{ checksum "build.gradle.kts" }}
-          - v2-dependencies-
+jobs:
+  compile:
+    executor: jdk
+    steps:
+      - checkout
+      - with_cache:
+          steps:
+            - run:
+                command: ./gradlew classes
+                name: Compiling main classes
+            - save_cache:
+                key: v3-{{ checksum "build.gradle.kts" }}-{{ checksum "buildSrc/src/main/kotlin/Plugin.kt" }}-{{ checksum "buildSrc/src/main/kotlin/Lib.kt" }}
+                paths:
+                  - ~/.gradle
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - build
+                  - buildSrc/build
 
-    - run: ./gradlew dependencies
-
-    - save_cache:
-        paths:
-        - ~/.gradle
-        key: v2-dependencies-{{ checksum "build.gradle.kts" }}-{{ checksum "buildSrc/src/main/kotlin/Plugin.kt" }}-{{ checksum "buildSrc/src/main/kotlin/Lib.kt" }}
-
-    # run tests!
-    - run: ./gradlew test
-
-    - store_test_results:
-        path: build/test-results
+  check:
+    executor: jdk
+    steps:
+      - checkout
+      - with_cache:
+          steps:
+            - attach_workspace:
+                at: .
+            - run:
+                command: ./gradlew check
+                name: Running tests
+            - store_test_results:
+                path: build/test-results
+            - store_artifacts:
+                path: build/reports
 
   markdown_lint:
     docker:
@@ -45,8 +66,10 @@ jobs:
 
 
 workflows:
-  version: 2
   full_workflow:
     jobs:
       - markdown_lint
-      - build
+      - compile
+      - check:
+          requires:
+            - compile
