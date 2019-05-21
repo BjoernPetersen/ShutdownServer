@@ -3,6 +3,7 @@ object Plugin {
 
     const val KOTLIN = "1.3.21"
     const val DOKKA = "0.9.17"
+    const val SHADOW_JAR = "5.0.0"
 
     const val DAGGER = "2.21"
 }

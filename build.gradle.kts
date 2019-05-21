@@ -8,6 +8,7 @@ plugins {
     kotlin("jvm") version Plugin.KOTLIN
     kotlin("kapt") version Plugin.KOTLIN
     id("org.jetbrains.dokka") version Plugin.DOKKA
+    id("com.github.johnrengelman.shadow") version Plugin.SHADOW_JAR
 
     idea
 }
