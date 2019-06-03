@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.vertx.core.Future
 import java.io.File
 import java.time.Instant
+import kotlin.math.max
 
 private data class CustomDescriptor(
     val shutdown: CustomAction?,
@@ -52,7 +53,11 @@ private class CustomKiller(
         state = Unscheduled()
     }
 
-    private fun timeEnv(time: Int) = mapOf("time" to time.toString())
+    private fun timeEnv(time: Int) = mapOf(
+        "time" to time.toString(),
+        "seconds" to time.toString(),
+        "minutes" to (if (time == 0) 0 else max(1, time / 60)).toString()
+    )
 
     private fun CustomAction.performSync(env: Map<String, Any>) {
         val future = Future.future<ActionResult>()

@@ -3,6 +3,7 @@ package net.bjoernpetersen.shutdown.exec
 import mu.KotlinLogging
 import java.io.IOException
 import java.time.Instant
+import kotlin.math.max
 
 interface Killer {
     val state: KillerState
@@ -84,6 +85,6 @@ class WinKiller : Killer by DelegateKiller(
     { ProcessBuilder("shutdown", "-a").start() })
 
 class LinuxKiller : Killer by DelegateKiller(
-    { ProcessBuilder("shutdown", "$it").start() },
+    { ProcessBuilder("shutdown", "${if (it == 0) 0 else max(1, it / 60)}").start() },
     { ProcessBuilder("shutdown", "-r", "$it").start() },
     { ProcessBuilder("shutdown", "-c").start() })

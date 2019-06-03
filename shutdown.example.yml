@@ -1,8 +1,12 @@
 # You don't have to define all commands.
 # Undefined commands will fall back to the default implementation.
 shutdown:
-  cmd: shutdown -s -t <time>
+  # This would be valid for Windows.
+  cmd: shutdown -s -t <seconds>
 reboot:
-  cmd: shutdown -r -t <time>
+  # This works on most Linux machines.
+  # Note that the shutdown time is provided in seconds, thus the minutes are calculated from them.
+  # The calculated minutes will ALWAYS be >= 1 if the seconds are greater than 0.
+  cmd: shutdown -r -t +<minutes>
 abort:
   cmd: shutdown -a
