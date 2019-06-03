@@ -4,6 +4,7 @@ import com.jdiazcano.cfg4k.providers.ConfigProvider
 import com.jdiazcano.cfg4k.providers.bind
 import net.bjoernpetersen.shutdown.api.Api
 import net.bjoernpetersen.shutdown.exec.KillerModule
+import net.bjoernpetersen.shutdown.exec.TestKiller
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext

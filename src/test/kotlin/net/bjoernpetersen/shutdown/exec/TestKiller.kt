@@ -1,9 +1,5 @@
-package net.bjoernpetersen.shutdown
+package net.bjoernpetersen.shutdown.exec
 
-import net.bjoernpetersen.shutdown.exec.Killer
-import net.bjoernpetersen.shutdown.exec.KillerState
-import net.bjoernpetersen.shutdown.exec.Scheduled
-import net.bjoernpetersen.shutdown.exec.Unscheduled
 import java.time.Instant
 
 class TestKiller : Killer {
