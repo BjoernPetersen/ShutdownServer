@@ -98,7 +98,6 @@ tasks {
 
     withType<Test> {
         useJUnitPlatform()
-        systemProperties["junit.jupiter.execution.parallel.enabled"] = true
     }
 
     withType<Jar> {

@@ -16,6 +16,7 @@ class InstanceExtension : ParameterResolver, BeforeEachCallback {
 
     override fun beforeEach(context: ExtensionContext?) {
         instance = DaggerInstance.builder()
+            .argsModule(ArgsModule(emptyArray()))
             .configModule(ConfigModule(Paths.get("testConfig.yml")))
             .killerModule(KillerModule(TestKiller()))
             .build()

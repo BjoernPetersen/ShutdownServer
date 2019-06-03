@@ -7,7 +7,6 @@ import net.bjoernpetersen.shutdown.Instance
 import net.bjoernpetersen.shutdown.ServerConfig
 import net.bjoernpetersen.shutdown.TestKiller
 import net.bjoernpetersen.shutdown.encodeBase64
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -35,7 +34,7 @@ class ShutdownTest : AuthorizedEndpointTest {
             }
             .end()
 
-        Assertions.assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS))
+        assertTrue(context.awaitCompletion(5, TimeUnit.SECONDS))
         if (context.failed()) {
             fail(context.causeOfFailure())
         }

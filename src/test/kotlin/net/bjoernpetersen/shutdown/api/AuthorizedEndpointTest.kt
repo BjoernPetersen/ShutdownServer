@@ -4,6 +4,7 @@ package net.bjoernpetersen.shutdown.api
 
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpClient
+import io.vertx.core.http.HttpClientRequest
 import io.vertx.core.http.HttpMethod
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
@@ -169,6 +170,6 @@ interface AuthorizedEndpointTest {
         }
     }
 
-    fun HttpClient.request(serverConfig: ServerConfig) =
+    fun HttpClient.request(serverConfig: ServerConfig): HttpClientRequest =
         request(method, serverConfig.port, "localhost", path)
 }
