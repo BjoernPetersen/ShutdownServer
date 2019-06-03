@@ -5,5 +5,5 @@ object Plugin {
     const val DOKKA = "0.9.18"
     const val SHADOW_JAR = "5.0.0"
 
-    const val DAGGER = "2.22.1"
+    const val DAGGER = "2.23.1"
 }
