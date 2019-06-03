@@ -1,8 +1,10 @@
+import com.diffplug.spotless.LineEnding
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("com.github.ben-manes.versions") version Plugin.VERSIONS
+    id("com.diffplug.gradle.spotless") version Plugin.SPOTLESS
 
     application
     kotlin("jvm") version Plugin.KOTLIN
@@ -94,8 +96,15 @@ tasks {
         kotlinOptions.jvmTarget = "1.8"
     }
 
-    "test"(Test::class) {
+    withType<Test> {
         useJUnitPlatform()
+        systemProperties["junit.jupiter.execution.parallel.enabled"] = true
+    }
+
+    withType<Jar> {
+        from(project.projectDir) {
+            include("LICENSE")
+        }
     }
 
     "dokka"(DokkaTask::class) {
@@ -120,5 +129,23 @@ repositories {
 idea {
     module {
         isDownloadJavadoc = true
+    }
+}
+
+spotless {
+    kotlin {
+        ktlint()
+        lineEndings = LineEnding.UNIX
+        endWithNewline()
+    }
+    kotlinGradle {
+        ktlint()
+        lineEndings = LineEnding.UNIX
+        endWithNewline()
+    }
+    format("markdown") {
+        target("**/*.md")
+        lineEndings = LineEnding.UNIX
+        endWithNewline()
     }
 }
