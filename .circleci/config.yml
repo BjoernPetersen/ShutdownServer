@@ -57,6 +57,24 @@ jobs:
             - store_artifacts:
                 path: build/reports
 
+  build:
+    executor: jdk
+    steps:
+      - checkout
+      - with_cache:
+          steps:
+            - attach_workspace:
+                at: .
+            - run:
+                command: ./gradlew distZip
+                name: Building distribution zip
+            - run:
+                command: mv build/distributions/ShutdownServer-*.zip build/distributions/ShutdownServer.zip
+                name: Renaming distribution zip
+            - store_artifacts:
+                path: build/distributions
+                destination: dist
+
   markdown_lint:
     docker:
       - image: 06kellyjac/markdownlint-cli:0.13.0-alpine
@@ -73,3 +91,7 @@ workflows:
       - check:
           requires:
             - compile
+      - build:
+          requires:
+            - compile
+            - check
