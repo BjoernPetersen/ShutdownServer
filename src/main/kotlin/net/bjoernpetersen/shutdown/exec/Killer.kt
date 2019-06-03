@@ -38,7 +38,8 @@ interface Killer {
 private class DelegateKiller(
     private val shutDownDelegate: (Int) -> Unit,
     private val rebootDelegate: (Int) -> Unit,
-    private val abortDelegate: () -> Unit) : Killer {
+    private val abortDelegate: () -> Unit
+) : Killer {
 
     private val logger = KotlinLogging.logger {}
 

@@ -1,6 +1,6 @@
 package net.bjoernpetersen.shutdown
 
-import java.util.*
+import java.util.Base64
 
 fun String.encodeBase64(): String {
     return Base64.getEncoder().encode(this.toByteArray()).toString(Charsets.UTF_8)

@@ -32,7 +32,8 @@ sealed class CustomAction {
 data class CmdAction(
     val command: List<String>,
     val code: Int? = null,
-    val ignoreExitCode: Boolean = false) : CustomAction() {
+    val ignoreExitCode: Boolean = false
+) : CustomAction() {
 
     override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
         val renderedCmd = command.map { it.renderTemplate(env) }
@@ -61,9 +62,11 @@ data class CmdAction(
     }
 }
 
-data class ShortCmdAction(val cmd: String,
+data class ShortCmdAction(
+    val cmd: String,
     val code: Int? = null,
-    val ignoreExitCode: Boolean = false) : CustomAction() {
+    val ignoreExitCode: Boolean = false
+) : CustomAction() {
     private val delegate = CmdAction(cmd.split(' '), code, ignoreExitCode)
     override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
         delegate.perform(future, env)
@@ -88,7 +91,6 @@ data class NoContentAction(val content: Boolean) : CustomAction() {
         future.complete(ActionResult(null, 204))
     }
 }
-
 
 private fun String.renderTemplate(env: Map<String, Any>): String {
     return ST(this)

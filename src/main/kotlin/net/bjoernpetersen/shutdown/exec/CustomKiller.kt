@@ -8,11 +8,13 @@ import java.time.Instant
 private data class CustomDescriptor(
     val shutdown: CustomAction?,
     val reboot: CustomAction?,
-    val abort: CustomAction?)
+    val abort: CustomAction?
+)
 
 private class CustomKiller(
     private val fallback: Killer,
-    private val descriptor: CustomDescriptor) : Killer {
+    private val descriptor: CustomDescriptor
+) : Killer {
 
     override var state: KillerState = Unscheduled()
         private set

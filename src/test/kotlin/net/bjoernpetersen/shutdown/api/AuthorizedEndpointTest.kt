@@ -115,8 +115,11 @@ interface AuthorizedEndpointTest {
     }
 
     @TestFactory
-    fun invalidToken(vertx: Vertx, serverConfig: ServerConfig,
-        instance: Instance): List<DynamicTest> {
+    fun invalidToken(
+        vertx: Vertx,
+        serverConfig: ServerConfig,
+        instance: Instance
+    ): List<DynamicTest> {
         val client = vertx.createHttpClient()
         return listOf("literallyinvalid", "wrong".encodeBase64())
             .map { token ->
