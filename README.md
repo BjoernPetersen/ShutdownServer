@@ -17,7 +17,7 @@ For Windows users, the easiest way is to either to type `shell:common startup`
 in the "Run" prompt (`Win+R`) and insert a shortcut there. For more fine grained control
 the Task Scheduler is recommended.
 
-You can also find builds on the releases page or download the latest 
+You can also find builds on the releases page or download the latest
 develop build [from CircleCI](https://felixgail.github.io/CircleCIArtifactProvider/index.html?vcs-type=github&user=BjoernPetersen&project=ShutdownServer&build=latest&branch=develop&filter=successful&path=dist/ShutdownServer.zip&token=f52a99263b4356b276b1270f4eaa9a738aa25e6e).
 
 ## Compilation
