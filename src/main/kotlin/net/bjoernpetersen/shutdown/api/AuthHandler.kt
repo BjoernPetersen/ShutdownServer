@@ -4,8 +4,11 @@ import io.vertx.core.Handler
 import io.vertx.ext.web.RoutingContext
 import net.bjoernpetersen.shutdown.ServerConfig
 import net.bjoernpetersen.shutdown.decodeBase64
+import javax.inject.Inject
 
-class AuthHandler(serverConfig: ServerConfig) : Handler<RoutingContext> {
+class AuthHandler @Inject constructor(
+    serverConfig: ServerConfig
+) : Handler<RoutingContext> {
     private val token: String = serverConfig.token
 
     override fun handle(ctx: RoutingContext) {

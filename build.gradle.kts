@@ -25,9 +25,17 @@ dependencies {
     implementation(
         group = "io.github.microutils",
         name = "kotlin-logging",
-        version = Lib.KOTLIN_LOGGING)
+        version = Lib.KOTLIN_LOGGING
+    )
     implementation(group = "org.slf4j", name = "slf4j-api", version = Lib.SLF4J)
     implementation(group = "ch.qos.logback", name = "logback-classic", version = Lib.LOGBACK)
+
+    // CLI args
+    implementation(
+        group = "com.github.ajalt",
+        name = "clikt",
+        version = Lib.CLIKT
+    )
 
     // Config
     implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-core", version = Lib.CFG4K)
@@ -36,15 +44,18 @@ dependencies {
     implementation(
         group = "com.fasterxml.jackson.core",
         name = "jackson-databind",
-        version = Lib.JACKSON)
+        version = Lib.JACKSON
+    )
     implementation(
         group = "com.fasterxml.jackson.module",
         name = "jackson-module-kotlin",
-        version = Lib.JACKSON)
+        version = Lib.JACKSON
+    )
     implementation(
         group = "com.fasterxml.jackson.dataformat",
         name = "jackson-dataformat-yaml",
-        version = Lib.JACKSON)
+        version = Lib.JACKSON
+    )
     implementation(group = "org.antlr", name = "ST4", version = Lib.STRING_TEMPLATE)
 
     // Vertx
@@ -57,20 +68,24 @@ dependencies {
     implementation(
         group = "com.google.dagger",
         name = "dagger",
-        version = Lib.DAGGER)
+        version = Lib.DAGGER
+    )
     kapt(
         group = "com.google.dagger",
         name = "dagger-compiler",
-        version = Lib.DAGGER)
+        version = Lib.DAGGER
+    )
 
-    testRuntime(
+    testRuntimeOnly(
         group = "org.junit.jupiter",
         name = "junit-jupiter-engine",
-        version = Lib.JUNIT)
+        version = Lib.JUNIT
+    )
     testImplementation(
         group = "org.junit.jupiter",
         name = "junit-jupiter-api",
-        version = Lib.JUNIT)
+        version = Lib.JUNIT
+    )
     testImplementation(group = "io.vertx", name = "vertx-junit5", version = Lib.VERTX)
 }
 

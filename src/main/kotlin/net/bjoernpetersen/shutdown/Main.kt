@@ -8,8 +8,9 @@ import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.exec.KillerModule
 import kotlin.system.exitProcess
 
-fun main() {
+fun main(args: Array<String>) {
     val instance = DaggerInstance.builder()
+        .argsModule(ArgsModule(args))
         .configModule(ConfigModule())
         .killerModule(KillerModule())
         .build()

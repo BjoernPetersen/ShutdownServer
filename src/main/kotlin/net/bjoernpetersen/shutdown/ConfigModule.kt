@@ -4,15 +4,17 @@ import com.jdiazcano.cfg4k.providers.ConfigProvider
 import com.jdiazcano.cfg4k.providers.bind
 import dagger.Module
 import dagger.Provides
+import java.nio.file.Path
+import java.nio.file.Paths
 import javax.inject.Singleton
 
 @Module
-class ConfigModule(private val path: String = "config.yml") {
+class ConfigModule(private val path: Path = Paths.get("config.yml")) {
 
     @Singleton
     @Provides
-    fun provider(): ConfigProvider {
-        return readConfig(path)
+    fun provider(args: Args): ConfigProvider {
+        return readConfig(args.root.resolve(path))
     }
 
     @Singleton

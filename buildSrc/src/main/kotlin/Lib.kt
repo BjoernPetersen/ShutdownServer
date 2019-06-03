@@ -5,6 +5,8 @@ object Lib {
     const val SLF4J = "1.8.0-beta4"
     const val LOGBACK = "1.3.0-alpha4"
 
+    const val CLIKT = "2.0.0"
+
     const val VERTX = "3.7.1"
     const val DAGGER = Plugin.DAGGER
     const val JACKSON = "2.9.9"

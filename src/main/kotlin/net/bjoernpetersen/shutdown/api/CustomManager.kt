@@ -9,44 +9,51 @@ import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
 import mu.KotlinLogging
+import net.bjoernpetersen.shutdown.Args
 import net.bjoernpetersen.shutdown.exec.ActionResult
 import net.bjoernpetersen.shutdown.exec.CustomAction
 import net.bjoernpetersen.shutdown.exec.customEndpoint
 import org.stringtemplate.v4.misc.MultiMap
-import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.HashMap
 import javax.inject.Inject
+import kotlin.streams.asSequence
 
-class CustomManager @Inject constructor() : EndpointManager {
+class CustomManager @Inject constructor(
+    private val args: Args
+) : EndpointManager {
     private val logger = KotlinLogging.logger { }
 
     override fun registerHandlers(router: Router) {
-        val customDir = File("custom")
-        if (!customDir.isDirectory) return
-        customDir
-            .listFiles { file -> file.isFile && (file.extension == "yml" || file.extension == "yaml") }
-            .forEach { file ->
-                logger.info { "Found custom endpoint file: ${file.name}" }
-                val endpoint = customEndpoint(file)
-                val path = file.nameWithoutExtension
+        val customDir = args.root.resolve("custom")
+        if (!Files.isDirectory(customDir)) return
+        Files.list(customDir).asSequence()
+            .filter {
+                Files.isRegularFile(it) && (it.extension == "yml" || it.extension == "yaml")
+            }
+            .forEach { path ->
+                logger.info { "Found custom endpoint file: ${path.fileName}" }
+                val endpoint = customEndpoint(path.toFile())
+                val apiPath = path.fileNameWithoutExtension
                 endpoint.get?.let { actions ->
                     router
-                        .route(HttpMethod.GET, "/$path")
+                        .route(HttpMethod.GET, "/$apiPath")
                         .handler { bodyless(it, actions) }
                 }
                 endpoint.delete?.let { actions ->
                     router
-                        .route(HttpMethod.DELETE, "/$path")
+                        .route(HttpMethod.DELETE, "/$apiPath")
                         .handler { bodyless(it, actions) }
                 }
                 endpoint.post?.let { actions ->
                     router
-                        .route(HttpMethod.POST, "/$path")
+                        .route(HttpMethod.POST, "/$apiPath")
                         .handler { bodyful(it, actions) }
                 }
                 endpoint.put?.let { actions ->
                     router
-                        .route(HttpMethod.PUT, "/$path")
+                        .route(HttpMethod.PUT, "/$apiPath")
                         .handler { bodyful(it, actions) }
                 }
             }
@@ -154,3 +161,9 @@ private object BodyConverter {
         }
     }
 }
+
+private val Path.extension: String
+    get() = fileName.toString().substringAfterLast('.', "")
+
+private val Path.fileNameWithoutExtension: String
+    get() = fileName.toString().substringBeforeLast('.')

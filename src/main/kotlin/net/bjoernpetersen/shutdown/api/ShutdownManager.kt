@@ -11,7 +11,8 @@ import javax.inject.Inject
 
 class ShutdownManager @Inject constructor(
     private val killer: Killer,
-    private val shutdownConfig: ShutdownConfig) : EndpointManager {
+    private val shutdownConfig: ShutdownConfig
+) : EndpointManager {
 
     private val logger = KotlinLogging.logger { }
     override fun registerHandlers(router: Router) {

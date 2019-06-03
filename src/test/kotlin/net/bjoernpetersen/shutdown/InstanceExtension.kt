@@ -9,20 +9,22 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolutionException
 import org.junit.jupiter.api.extension.ParameterResolver
+import java.nio.file.Paths
 
 class InstanceExtension : ParameterResolver, BeforeEachCallback {
     private lateinit var instance: Instance
 
     override fun beforeEach(context: ExtensionContext?) {
         instance = DaggerInstance.builder()
-            .configModule(ConfigModule("testConfig.yml"))
+            .configModule(ConfigModule(Paths.get("testConfig.yml")))
             .killerModule(KillerModule(TestKiller()))
             .build()
     }
 
     override fun supportsParameter(
         parameterContext: ParameterContext,
-        extensionContext: ExtensionContext): Boolean {
+        extensionContext: ExtensionContext
+    ): Boolean {
         val type = parameterContext.parameter.type.kotlin
         return when (type) {
             Instance::class,
@@ -34,8 +36,10 @@ class InstanceExtension : ParameterResolver, BeforeEachCallback {
         }
     }
 
-    override fun resolveParameter(parameterContext: ParameterContext,
-        extensionContext: ExtensionContext): Any {
+    override fun resolveParameter(
+        parameterContext: ParameterContext,
+        extensionContext: ExtensionContext
+    ): Any {
         return when (parameterContext.parameter.type.kotlin) {
             Instance::class -> instance
             Api::class -> instance.api

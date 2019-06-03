@@ -9,7 +9,8 @@ import com.jdiazcano.cfg4k.sources.ClasspathConfigSource
 import com.jdiazcano.cfg4k.sources.FileConfigSource
 import com.jdiazcano.cfg4k.yaml.YamlConfigLoader
 import mu.KotlinLogging
-import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
 interface ServerConfig {
     val port: Int
@@ -21,19 +22,18 @@ interface ShutdownConfig {
     val time: Int
 }
 
-fun readConfig(filePath: String): ConfigProvider {
+fun readConfig(configPath: Path): ConfigProvider {
     val logger = KotlinLogging.logger {}
 
     val defaultsSource = ClasspathConfigSource("/config.yml")
     val defaultsLoader = YamlConfigLoader(defaultsSource)
     val defaultsProvider = DefaultConfigProvider(defaultsLoader)
 
-    val configFile = File(filePath)
-    val fileProvider = if (!configFile.isFile) {
-        logger.warn { "Could not find config file '${configFile.name}'" }
+    val fileProvider = if (!Files.isRegularFile(configPath)) {
+        logger.warn { "Could not find config file '$configPath'" }
         null
     } else {
-        val fileSource = FileConfigSource(configFile)
+        val fileSource = FileConfigSource(configPath)
         val fileLoader = YamlConfigLoader(fileSource)
         DefaultConfigProvider(fileLoader)
     }

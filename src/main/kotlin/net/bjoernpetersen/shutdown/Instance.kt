@@ -8,7 +8,7 @@ import net.bjoernpetersen.shutdown.exec.KillerModule
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [ConfigModule::class, KillerModule::class])
+@Component(modules = [ArgsModule::class, ConfigModule::class, KillerModule::class])
 interface Instance {
 
     val api: Api

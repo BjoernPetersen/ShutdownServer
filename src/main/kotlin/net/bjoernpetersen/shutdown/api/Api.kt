@@ -13,9 +13,11 @@ import javax.inject.Inject
 
 class Api @Inject constructor(
     private val serverConfig: ServerConfig,
+    private val authHandler: AuthHandler,
     private val versionManager: VersionManager,
     private val shutdownManager: ShutdownManager,
-    private val customManager: CustomManager) : AbstractVerticle() {
+    private val customManager: CustomManager
+) : AbstractVerticle() {
 
     private val logger = KotlinLogging.logger {}
 
@@ -27,15 +29,17 @@ class Api @Inject constructor(
                 it.registerModule(KotlinModule())
             }
 
-            val server = vertx.createHttpServer(HttpServerOptions()
-                .setPort(serverConfig.port))
+            val server = vertx.createHttpServer(
+                HttpServerOptions()
+                    .setPort(serverConfig.port)
+            )
 
             val router = Router.router(vertx)!!
 
             router.route().handler(BodyHandler.create())
 
             // Register auth handler for all routes
-            router.route().handler(AuthHandler(serverConfig))
+            router.route().handler(authHandler)
 
             router
                 .registerHandlers(versionManager)
