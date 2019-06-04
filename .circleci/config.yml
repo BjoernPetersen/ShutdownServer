@@ -66,11 +66,14 @@ jobs:
             - attach_workspace:
                 at: .
             - run:
-                command: ./gradlew distZip
-                name: Building distribution zip
+                command: ./gradlew distZip shadowJar
+                name: Building distribution files
             - run:
                 command: mv build/distributions/ShutdownServer-*.zip build/distributions/ShutdownServer.zip
                 name: Renaming distribution zip
+            - run:
+                command: mv build/libs/ShutdownServer-*-all.zip build/distributions/ShutdownServer-all.jar
+                name: Renaming shadowed jar
             - store_artifacts:
                 path: build/distributions
                 destination: dist
