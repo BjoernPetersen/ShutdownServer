@@ -103,6 +103,8 @@ The output of this action is the `STDOUT` output of the process.
 key | type | description | required
 ----|------|-------------|---------
 command | `array<string>` | The command and arguments you want to run | Yes
+workingDir | string | The working directory for the program | No
+detached | boolean | If true, the server won't wait for the program to terminate (implies code 202) | No; default: false
 code | `integer` | HTTP status code to send **if the command exits with code 0** | No; default: 200
 ignoreExitCode | `boolean` | Whether to ignore the command's exit code | No; default: false
 

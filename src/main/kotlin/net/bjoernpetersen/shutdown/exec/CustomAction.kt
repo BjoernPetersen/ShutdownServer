@@ -11,6 +11,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.vertx.core.Future
 import mu.KotlinLogging
 import org.stringtemplate.v4.ST
+import java.io.File
 import java.io.IOException
 import kotlin.concurrent.thread
 import kotlin.reflect.KClass
@@ -31,6 +32,8 @@ sealed class CustomAction {
 
 data class CmdAction(
     val command: List<String>,
+    val workingDir: String? = null,
+    val detached: Boolean = false,
     val code: Int? = null,
     val ignoreExitCode: Boolean = false
 ) : CustomAction() {
@@ -38,7 +41,9 @@ data class CmdAction(
     override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
         val renderedCmd = command.map { it.renderTemplate(env) }
         val process = try {
-            ProcessBuilder(renderedCmd).start()
+            ProcessBuilder(renderedCmd)
+                .directory(workingDir?.let { File(it) })
+                .start()
         } catch (e: IOException) {
             return future.fail(e)
         }
@@ -57,17 +62,27 @@ data class CmdAction(
                 500
             }
 
-            future.complete(ActionResult(output.toString(), resultCode))
+            if (!detached) future.complete(ActionResult(output.toString(), resultCode))
         }
+        if (detached) future.complete(ActionResult(null, code ?: 202))
     }
 }
 
 data class ShortCmdAction(
     val cmd: String,
+    val workingDir: String = ".",
+    val detached: Boolean = false,
     val code: Int? = null,
     val ignoreExitCode: Boolean = false
 ) : CustomAction() {
-    private val delegate = CmdAction(cmd.split(' '), code, ignoreExitCode)
+    private val delegate = CmdAction(
+        cmd.split(' '),
+        workingDir,
+        detached,
+        code,
+        ignoreExitCode
+    )
+
     override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
         delegate.perform(future, env)
     }
@@ -121,7 +136,8 @@ private class CustomActionDeserializer : StdDeserializer<CustomAction>(CustomAct
             }
         }
         throw IOException(
-            "Does not match any known types. Expected one of: ${implementations.keys}")
+            "Does not match any known types. Expected one of: ${implementations.keys}"
+        )
     }
 
     private companion object {
