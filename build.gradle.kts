@@ -92,7 +92,7 @@ dependencies {
 }
 
 tasks {
-    withType(KotlinCompile::class) {
+    withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
     }
 
@@ -117,6 +117,13 @@ tasks {
             filter {
                 it.replace("%APP_VERSION%", version.toString())
             }
+        }
+    }
+
+    dependencyUpdates {
+        rejectVersionIf {
+            val version = candidate.version
+            isUnstable(version, currentVersion)
         }
     }
 }
