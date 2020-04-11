@@ -15,7 +15,7 @@ plugins {
     idea
 }
 
-version = "5.2.0"
+version = "6.0.0"
 
 application {
     mainClassName = "net.bjoernpetersen.shutdown.Main"
