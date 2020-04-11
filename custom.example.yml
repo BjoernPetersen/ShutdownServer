@@ -6,7 +6,7 @@
 get:
   - cmd: doAnything -flag
     # Print "Result: " and the output of the first command (0-indexed)
-  - echo: Result: <output.0>
+  - echo: "Result: <output.0>"
 post:
     # Use a query parameter
   - cmd: doSomeOtherThing -arg <query.myarg>
