@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ShutdownServer",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "get": {
+      "$ref": "#/definitions/operation"
+    },
+    "delete": {
+      "$ref": "#/definitions/operation"
+    },
+    "put": {
+      "$ref": "#/definitions/operation"
+    },
+    "post": {
+      "$ref": "#/definitions/operation"
+    }
+  },
+  "definitions": {
+    "operation": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/echo"
+          },
+          {
+            "$ref": "#/definitions/noContent"
+          },
+          {
+            "$ref": "#/definitions/command"
+          },
+          {
+            "$ref": "#/definitions/cmd"
+          },
+          {
+            "$ref": "#/definitions/pwsh"
+          }
+        ]
+      }
+    },
+    "echo": {
+      "type": "object",
+      "required": [
+        "echo"
+      ],
+      "properties": {
+        "echo": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer"
+        }
+      }
+    },
+    "noContent": {
+      "type": "object",
+      "required": [
+        "content"
+      ],
+      "properties": {
+        "content": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "command": {
+      "type": "object",
+      "required": [
+        "command"
+      ],
+      "properties": {
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "workingDir": {
+          "type": "string"
+        },
+        "detached": {
+          "type": "boolean"
+        },
+        "code": {
+          "type": "integer"
+        },
+        "ignoreExitCode": {
+          "type": "boolean"
+        }
+      }
+    },
+    "cmd": {
+      "type": "object",
+      "required": [
+        "cmd"
+      ],
+      "properties": {
+        "cmd": {
+          "type": "string"
+        },
+        "workingDir": {
+          "type": "string"
+        },
+        "detached": {
+          "type": "boolean"
+        },
+        "code": {
+          "type": "integer"
+        },
+        "ignoreExitCode": {
+          "type": "boolean"
+        }
+      }
+    },
+    "pwsh": {
+      "type": "object",
+      "required": [
+        "pwsh"
+      ],
+      "properties": {
+        "pwsh": {
+          "type": "string"
+        },
+        "workingDir": {
+          "type": "string"
+        },
+        "detached": {
+          "type": "boolean"
+        },
+        "code": {
+          "type": "integer"
+        },
+        "ignoreExitCode": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

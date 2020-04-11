@@ -78,6 +78,9 @@ and each has access to the output of all previous actions ([see template values]
 
 The output of the last action will be used as the HTTP response body.
 
+A JSON Schema of the custom endpoint file format can be found
+[in this repo](ShutdownServer-schema.json).
+
 The following actions are available:
 
 **Echo:**
