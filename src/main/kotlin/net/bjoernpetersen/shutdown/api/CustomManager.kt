@@ -1,6 +1,7 @@
 package net.bjoernpetersen.shutdown.api
 
 import io.vertx.core.Future
+import io.vertx.core.Promise
 import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
@@ -104,7 +105,7 @@ class CustomManager @Inject constructor(
         index: Int
     ) {
         val action = actions[index]
-        ctx.vertx().executeBlocking({ future: Future<ActionResult> ->
+        ctx.vertx().executeBlocking({ future: Promise<ActionResult> ->
             action.perform(future, env)
         }, {
             if (it.failed()) {

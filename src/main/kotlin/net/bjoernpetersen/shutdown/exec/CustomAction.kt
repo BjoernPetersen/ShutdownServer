@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.vertx.core.Future
+import io.vertx.core.Promise
 import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.encodeBase64
 import org.stringtemplate.v4.ST
@@ -21,7 +22,7 @@ import kotlin.reflect.full.primaryConstructor
 sealed class CustomAction {
     protected val logger = KotlinLogging.logger {}
 
-    abstract fun perform(future: Future<ActionResult>, env: Map<String, Any>)
+    abstract fun perform(future: Promise<ActionResult>, env: Map<String, Any>)
 
     companion object {
         val MAPPER = ObjectMapper(YAMLFactory()).apply {
@@ -39,7 +40,7 @@ data class CmdAction(
     val ignoreExitCode: Boolean = false
 ) : CustomAction() {
 
-    override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
+    override fun perform(future: Promise<ActionResult>, env: Map<String, Any>) {
         val renderedCmd = command.map { it.renderTemplate(env) }
         val process = try {
             ProcessBuilder(renderedCmd)
@@ -84,7 +85,7 @@ data class ShortCmdAction(
         ignoreExitCode
     )
 
-    override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
+    override fun perform(future: Promise<ActionResult>, env: Map<String, Any>) {
         delegate.perform(future, env)
     }
 }
@@ -97,7 +98,7 @@ data class PwshAction(
     val ignoreExitCode: Boolean = false
 ) : CustomAction() {
 
-    override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
+    override fun perform(future: Promise<ActionResult>, env: Map<String, Any>) {
         val renderedCmd = pwsh.renderTemplate(env)
         val encodedCmd = renderedCmd.encodeBase64(Charsets.UTF_16LE)
         val process = try {
@@ -129,7 +130,7 @@ data class PwshAction(
 }
 
 data class EchoAction(val echo: String, val code: Int = 200) : CustomAction() {
-    override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
+    override fun perform(future: Promise<ActionResult>, env: Map<String, Any>) {
         val result = echo.renderTemplate(env)
         future.complete(ActionResult(result, code))
     }
@@ -142,7 +143,7 @@ data class NoContentAction(val content: Boolean) : CustomAction() {
         }
     }
 
-    override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
+    override fun perform(future: Promise<ActionResult>, env: Map<String, Any>) {
         future.complete(ActionResult(null, 204))
     }
 }

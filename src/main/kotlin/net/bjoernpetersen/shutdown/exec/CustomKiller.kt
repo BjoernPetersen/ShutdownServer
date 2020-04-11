@@ -1,7 +1,7 @@
 package net.bjoernpetersen.shutdown.exec
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.vertx.core.Future
+import io.vertx.core.Promise
 import java.io.File
 import java.time.Instant
 import kotlin.math.max
@@ -60,10 +60,11 @@ private class CustomKiller(
     )
 
     private fun CustomAction.performSync(env: Map<String, Any>) {
-        val future = Future.future<ActionResult>()
-        perform(future, env)
+        val promise = Promise.promise<ActionResult>()
+        val future = promise.future()
+        perform(promise, env)
         while (!future.isComplete) {
-            Thread.sleep(200)
+            Thread.sleep(100)
         }
     }
 }

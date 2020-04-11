@@ -32,6 +32,9 @@ dependencies {
     implementation(group = "org.slf4j", name = "slf4j-api", version = Lib.SLF4J)
     implementation(group = "ch.qos.logback", name = "logback-classic", version = Lib.LOGBACK)
 
+    // Working around kapt bug https://youtrack.jetbrains.com/issue/KT-35721
+    compileOnly("org.jetbrains:annotations:19.0.0")
+
     // CLI args
     implementation(
         group = "com.github.ajalt",
@@ -126,6 +129,11 @@ tasks {
             isUnstable(version, currentVersion)
         }
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 repositories {
