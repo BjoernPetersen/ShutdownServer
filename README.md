@@ -111,6 +111,22 @@ ignoreExitCode | `boolean` | Whether to ignore the command's exit code | No; def
 You may also use the short version of this action by specifying a command string
 as `cmd` instead of `command`. The command will be split by spaces.
 
+**Powershell:**
+
+Runs a command in PowerShell 6+. The command is invoked using the `pwsh` executable, which must be
+in the PATH. The output of this action is the `STDOUT` output of the process.
+
+key | type | description | required
+----|------|-------------|---------
+command | `string` | The command you want to run | Yes
+workingDir | string | The working directory for the program | No
+detached | boolean | If true, the server won't wait for the program to terminate (implies code 202) | No; default: false
+code | `integer` | HTTP status code to send **if the command exits with code 0** | No; default: 200
+ignoreExitCode | `boolean` | Whether to ignore the command's exit code | No; default: false
+
+You may also use the short version of this action by specifying a command string
+as `cmd` instead of `command`. The command will be split by spaces.
+
 #### Template values
 
 You can use [string templates](https://www.stringtemplate.org/) anywhere in your actions.

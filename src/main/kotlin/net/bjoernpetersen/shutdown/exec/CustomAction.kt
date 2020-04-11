@@ -10,6 +10,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.vertx.core.Future
 import mu.KotlinLogging
+import net.bjoernpetersen.shutdown.encodeBase64
 import org.stringtemplate.v4.ST
 import java.io.File
 import java.io.IOException
@@ -85,6 +86,45 @@ data class ShortCmdAction(
 
     override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
         delegate.perform(future, env)
+    }
+}
+
+data class PwshAction(
+    val pwsh: String,
+    val workingDir: String? = null,
+    val detached: Boolean = false,
+    val code: Int? = null,
+    val ignoreExitCode: Boolean = false
+) : CustomAction() {
+
+    override fun perform(future: Future<ActionResult>, env: Map<String, Any>) {
+        val renderedCmd = pwsh.renderTemplate(env)
+        val encodedCmd = renderedCmd.encodeBase64(Charsets.UTF_16LE)
+        val process = try {
+            ProcessBuilder("pwsh", "-EncodedCommand", encodedCmd)
+                .directory(workingDir?.let { File(it) })
+                .start()
+        } catch (e: IOException) {
+            return future.fail(e)
+        }
+        thread(name = "PwshAction ($renderedCmd)", isDaemon = true, start = true) {
+            val output = StringBuilder()
+            while (process.isAlive) {
+                process.inputStream.bufferedReader().forEachLine {
+                    output.appendln(it)
+                }
+            }
+            val resultCode = if (ignoreExitCode || process.exitValue() == 0) {
+                logger.debug { "Success." }
+                code ?: 200
+            } else {
+                logger.debug { "Failure with exit code: ${process.exitValue()}" }
+                500
+            }
+
+            if (!detached) future.complete(ActionResult(output.toString(), resultCode))
+        }
+        if (detached) future.complete(ActionResult(null, code ?: 202))
     }
 }
 
