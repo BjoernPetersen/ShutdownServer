@@ -8,6 +8,7 @@ import io.vertx.core.http.HttpClientRequest
 import io.vertx.core.http.HttpMethod
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
+import java.util.concurrent.TimeUnit
 import net.bjoernpetersen.shutdown.Instance
 import net.bjoernpetersen.shutdown.InstanceExtension
 import net.bjoernpetersen.shutdown.ServerConfig
@@ -22,7 +23,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.fail
-import java.util.concurrent.TimeUnit
 
 @ExtendWith(InstanceExtension::class, VertxExtension::class)
 interface AuthorizedEndpointTest {

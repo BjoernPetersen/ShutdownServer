@@ -3,14 +3,14 @@ package net.bjoernpetersen.shutdown.api
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
 import io.vertx.junit5.VertxTestContext
+import java.util.concurrent.TimeUnit
 import net.bjoernpetersen.shutdown.Instance
 import net.bjoernpetersen.shutdown.ServerConfig
-import net.bjoernpetersen.shutdown.exec.TestKiller
 import net.bjoernpetersen.shutdown.encodeBase64
+import net.bjoernpetersen.shutdown.exec.TestKiller
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
-import java.util.concurrent.TimeUnit
 
 class ShutdownTest : AuthorizedEndpointTest {
     override val path = "/shutdown"

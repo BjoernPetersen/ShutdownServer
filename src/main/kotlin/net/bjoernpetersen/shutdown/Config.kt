@@ -8,9 +8,9 @@ import com.jdiazcano.cfg4k.providers.OverrideConfigProvider
 import com.jdiazcano.cfg4k.sources.ClasspathConfigSource
 import com.jdiazcano.cfg4k.sources.FileConfigSource
 import com.jdiazcano.cfg4k.yaml.YamlConfigLoader
-import mu.KotlinLogging
 import java.nio.file.Files
 import java.nio.file.Path
+import mu.KotlinLogging
 
 interface ServerConfig {
     val port: Int

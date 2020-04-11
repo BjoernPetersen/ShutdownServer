@@ -8,16 +8,15 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import io.vertx.core.Future
 import io.vertx.core.Promise
-import mu.KotlinLogging
-import net.bjoernpetersen.shutdown.encodeBase64
-import org.stringtemplate.v4.ST
 import java.io.File
 import java.io.IOException
 import kotlin.concurrent.thread
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
+import mu.KotlinLogging
+import net.bjoernpetersen.shutdown.encodeBase64
+import org.stringtemplate.v4.ST
 
 sealed class CustomAction {
     protected val logger = KotlinLogging.logger {}

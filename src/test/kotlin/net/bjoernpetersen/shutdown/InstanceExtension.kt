@@ -2,6 +2,7 @@ package net.bjoernpetersen.shutdown
 
 import com.jdiazcano.cfg4k.providers.ConfigProvider
 import com.jdiazcano.cfg4k.providers.bind
+import java.nio.file.Paths
 import net.bjoernpetersen.shutdown.api.Api
 import net.bjoernpetersen.shutdown.exec.KillerModule
 import net.bjoernpetersen.shutdown.exec.TestKiller
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolutionException
 import org.junit.jupiter.api.extension.ParameterResolver
-import java.nio.file.Paths
 
 class InstanceExtension : ParameterResolver, BeforeEachCallback {
     private lateinit var instance: Instance

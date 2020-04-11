@@ -2,16 +2,14 @@ package net.bjoernpetersen.shutdown.api
 
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.vertx.core.AbstractVerticle
-import io.vertx.core.Future
 import io.vertx.core.Promise
 import io.vertx.core.http.HttpServerOptions
-import io.vertx.core.json.Json
 import io.vertx.core.json.jackson.DatabindCodec
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.BodyHandler
+import javax.inject.Inject
 import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.ServerConfig
-import javax.inject.Inject
 
 class Api @Inject constructor(
     private val serverConfig: ServerConfig,

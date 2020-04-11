@@ -1,9 +1,9 @@
 package net.bjoernpetersen.shutdown.exec
 
-import mu.KotlinLogging
 import java.io.IOException
 import java.time.Instant
 import kotlin.math.max
+import mu.KotlinLogging
 
 interface Killer {
     val state: KillerState

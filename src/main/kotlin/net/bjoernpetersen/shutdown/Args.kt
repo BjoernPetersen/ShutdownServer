@@ -6,10 +6,10 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.path
 import dagger.Module
 import dagger.Provides
-import mu.KotlinLogging
 import java.nio.file.Path
 import java.nio.file.Paths
 import javax.inject.Singleton
+import mu.KotlinLogging
 
 class Args : CliktCommand() {
     private val logger = KotlinLogging.logger { }

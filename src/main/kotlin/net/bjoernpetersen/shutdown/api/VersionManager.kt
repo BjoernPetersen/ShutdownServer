@@ -2,8 +2,8 @@ package net.bjoernpetersen.shutdown.api
 
 import io.vertx.core.http.HttpMethod
 import io.vertx.ext.web.Router
-import net.bjoernpetersen.shutdown.Version
 import javax.inject.Inject
+import net.bjoernpetersen.shutdown.Version
 
 class VersionManager @Inject constructor() : EndpointManager {
     private val version: String = Version.get()
