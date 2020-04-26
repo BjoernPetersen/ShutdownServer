@@ -24,7 +24,7 @@ You can also find builds on the releases page or download the latest `develop` b
 
 ## Compilation
 
-Compile using [Gradle](https://gradle.org/) and Java 1.8:
+Compile using [Gradle](https://gradle.org/) and Java 11:
 
 ```bash
 ./gradlew build
