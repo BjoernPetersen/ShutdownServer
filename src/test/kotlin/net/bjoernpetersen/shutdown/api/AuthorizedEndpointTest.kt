@@ -76,9 +76,10 @@ interface AuthorizedEndpointTest {
 
         vertx.createHttpClient()
             .request(serverConfig)
-            .handler {
+            .response {
                 context.verify {
-                    assertEquals(401, it.statusCode())
+                    assertTrue { it.succeeded() }
+                    assertEquals(401, it.result().statusCode())
                     context.completeNow()
                 }
             }
@@ -99,9 +100,10 @@ interface AuthorizedEndpointTest {
         vertx.createHttpClient()
             .request(serverConfig)
             .putHeader("token", "")
-            .handler {
+            .response {
                 context.verify {
-                    assertEquals(401, it.statusCode())
+                    assertTrue { it.succeeded() }
+                    assertEquals(401, it.result().statusCode())
                     context.completeNow()
                 }
             }
@@ -129,9 +131,10 @@ interface AuthorizedEndpointTest {
                     client
                         .request(serverConfig)
                         .putHeader("token", "invalid")
-                        .handler {
+                        .response {
                             context.verify {
-                                assertEquals(403, it.statusCode())
+                                assertTrue { it.succeeded() }
+                                assertEquals(403, it.result().statusCode())
                                 context.completeNow()
                             }
                         }
@@ -154,9 +157,10 @@ interface AuthorizedEndpointTest {
         vertx.createHttpClient()
             .request(serverConfig)
             .putHeader("token", serverConfig.token.encodeBase64())
-            .handler {
+            .response {
                 context.verify {
-                    assertTrue(it.statusCode() in 201..299)
+                    assertTrue { it.succeeded() }
+                    assertTrue(it.result().statusCode() in 201..299)
                     context.completeNow()
                 }
             }
@@ -171,5 +175,5 @@ interface AuthorizedEndpointTest {
     }
 
     fun HttpClient.request(serverConfig: ServerConfig): HttpClientRequest =
-        request(method, serverConfig.port, "localhost", path)
+        request(method, serverConfig.port, "localhost", path).result()
 }
