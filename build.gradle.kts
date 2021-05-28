@@ -1,16 +1,14 @@
 import com.diffplug.spotless.LineEnding
-import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.29.0"
-    id("com.diffplug.gradle.spotless") version "3.28.1"
+    id("com.github.ben-manes.versions") version "0.39.0"
+    id("com.diffplug.spotless") version "5.12.5"
 
     application
-    kotlin("jvm") version "1.3.72"
-    kotlin("kapt") version "1.3.72"
-    id("org.jetbrains.dokka") version "0.10.1"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    kotlin("jvm") version "1.5.10"
+    kotlin("kapt") version "1.5.10"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 
     idea
 }
@@ -77,12 +75,6 @@ tasks {
         }
     }
 
-    "dokka"(DokkaTask::class) {
-        // TODO maybe switch to javadoc (or another) format
-        outputFormat = "html"
-        outputDirectory = "$buildDir/javadoc"
-    }
-
     "processResources"(ProcessResources::class) {
         filesMatching("**/version.properties") {
             filter {
@@ -143,7 +135,8 @@ fun isUnstable(version: String, currentVersion: String): Boolean {
         "beta",
         "rc",
         "m",
-        "eap"
+        "eap",
+        "cr",
     ).any { it in lowerVersion && it !in lowerCurrentVersion }
 }
 
