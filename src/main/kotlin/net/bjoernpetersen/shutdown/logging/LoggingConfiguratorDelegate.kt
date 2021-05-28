@@ -52,13 +52,15 @@ internal class LoggingConfiguratorDelegate : ContextAwareBase, Configurator {
         rootLogger.addAppender(console)
 
         if (fileLevel != null) {
-            rootLogger.addAppender(FileAppender<ILoggingEvent>().configure {
-                context = ctx
-                name = "file"
-                this.encoder = encoder
-                addFilter(ThresholdFilter().configure { setLevel(fileLevel.levelStr) })
-                this.file = logFile!!.path
-            })
+            rootLogger.addAppender(
+                FileAppender<ILoggingEvent>().configure {
+                    context = ctx
+                    name = "file"
+                    this.encoder = encoder
+                    addFilter(ThresholdFilter().configure { setLevel(fileLevel.levelStr) })
+                    this.file = logFile!!.path
+                }
+            )
         }
     }
 }

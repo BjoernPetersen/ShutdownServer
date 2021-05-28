@@ -4,9 +4,9 @@ package net.bjoernpetersen.shutdown
 
 import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx
-import kotlin.system.exitProcess
 import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.exec.KillerModule
+import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
     val instance = DaggerInstance.builder()

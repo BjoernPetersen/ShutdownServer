@@ -8,17 +8,17 @@ import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.HashMap
-import javax.inject.Inject
-import kotlin.streams.asSequence
 import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.Args
 import net.bjoernpetersen.shutdown.exec.ActionResult
 import net.bjoernpetersen.shutdown.exec.CustomAction
 import net.bjoernpetersen.shutdown.exec.customEndpoint
 import org.stringtemplate.v4.misc.MultiMap
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.HashMap
+import javax.inject.Inject
+import kotlin.streams.asSequence
 
 class CustomManager @Inject constructor(
     private val args: Args
@@ -104,34 +104,37 @@ class CustomManager @Inject constructor(
         index: Int
     ) {
         val action = actions[index]
-        ctx.vertx().executeBlocking({ future: Promise<ActionResult> ->
-            action.perform(future, env)
-        }, {
-            if (it.failed()) {
-                ctx.fail(it.cause())
-            } else {
-                val result = it.result()
-                if (result.succeeded()) {
-                    if (index == actions.size - 1) {
+        ctx.vertx().executeBlocking(
+            { future: Promise<ActionResult> ->
+                action.perform(future, env)
+            },
+            {
+                if (it.failed()) {
+                    ctx.fail(it.cause())
+                } else {
+                    val result = it.result()
+                    if (result.succeeded()) {
+                        if (index == actions.size - 1) {
+                            ctx.response()
+                                .setStatusCode(result.code)
+                                .endNullable(result.message)
+                        } else {
+                            val message = result.message
+                            @Suppress("UNCHECKED_CAST")
+                            val outputs = (env["output"] as? Map<String, Any>)
+                                ?.toMutableMap() ?: HashMap()
+                            outputs[index.toString()] = message ?: ""
+                            val newEnv = env.plus("output" to outputs)
+                            execute(ctx, actions, newEnv, index + 1)
+                        }
+                    } else {
                         ctx.response()
                             .setStatusCode(result.code)
                             .endNullable(result.message)
-                    } else {
-                        val message = result.message
-                        @Suppress("UNCHECKED_CAST")
-                        val outputs = (env["output"] as? Map<String, Any>)
-                            ?.toMutableMap() ?: HashMap()
-                        outputs[index.toString()] = message ?: ""
-                        val newEnv = env.plus("output" to outputs)
-                        execute(ctx, actions, newEnv, index + 1)
                     }
-                } else {
-                    ctx.response()
-                        .setStatusCode(result.code)
-                        .endNullable(result.message)
                 }
             }
-        })
+        )
     }
 
     private fun HttpServerResponse.endNullable(obj: String?) {

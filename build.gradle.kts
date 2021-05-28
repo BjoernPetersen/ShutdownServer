@@ -15,7 +15,6 @@ plugins {
 
 version = "7.0.0-SNAPSHOT"
 
-
 application {
     mainClass.set("net.bjoernpetersen.shutdown.Main")
 }
@@ -110,12 +109,12 @@ idea {
 
 spotless {
     kotlin {
-        ktlint()
+        ktlint(libs.versions.ktlint.get())
         lineEndings = LineEnding.UNIX
         endWithNewline()
     }
     kotlinGradle {
-        ktlint()
+        ktlint(libs.versions.ktlint.get())
         lineEndings = LineEnding.UNIX
         endWithNewline()
     }
@@ -125,7 +124,6 @@ spotless {
         endWithNewline()
     }
 }
-
 
 fun isUnstable(version: String, currentVersion: String): Boolean {
     val lowerVersion = version.toLowerCase()
