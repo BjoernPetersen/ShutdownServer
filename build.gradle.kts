@@ -3,95 +3,63 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.github.ben-manes.versions") version Plugin.VERSIONS
-    id("com.diffplug.gradle.spotless") version Plugin.SPOTLESS
+    id("com.github.ben-manes.versions") version "0.29.0"
+    id("com.diffplug.gradle.spotless") version "3.28.1"
 
     application
-    kotlin("jvm") version Plugin.KOTLIN
-    kotlin("kapt") version Plugin.KOTLIN
-    id("org.jetbrains.dokka") version Plugin.DOKKA
-    id("com.github.johnrengelman.shadow") version Plugin.SHADOW_JAR
+    kotlin("jvm") version "1.3.72"
+    kotlin("kapt") version "1.3.72"
+    id("org.jetbrains.dokka") version "0.10.1"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 
     idea
 }
 
 version = "7.0.0-SNAPSHOT"
 
+
 application {
-    mainClassName = "net.bjoernpetersen.shutdown.Main"
+    mainClass.set("net.bjoernpetersen.shutdown.Main")
 }
 
 dependencies {
     // Basics
-    implementation(kotlin("stdlib-jdk8", version = Lib.KOTLIN))
-    implementation(
-        group = "io.github.microutils",
-        name = "kotlin-logging",
-        version = Lib.KOTLIN_LOGGING
-    )
-    implementation(group = "org.slf4j", name = "slf4j-api", version = Lib.SLF4J)
-    implementation(group = "ch.qos.logback", name = "logback-classic", version = Lib.LOGBACK)
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("reflect"))
+
+    implementation(libs.logging.slf4j.api)
+    implementation(libs.logging.kotlin)
+    implementation(libs.logging.logback)
 
     // Working around kapt bug https://youtrack.jetbrains.com/issue/KT-35721
     compileOnly("org.jetbrains:annotations:19.0.0")
 
     // CLI args
-    implementation(
-        group = "com.github.ajalt",
-        name = "clikt",
-        version = Lib.CLIKT
-    )
+    implementation(libs.clikt)
 
     // Config
-    implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-core", version = Lib.CFG4K)
-    implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-yaml", version = Lib.CFG4K)
-    implementation(kotlin("reflect", version = Lib.KOTLIN))
-    implementation(
-        group = "com.fasterxml.jackson.core",
-        name = "jackson-databind",
-        version = Lib.JACKSON
-    )
-    implementation(
-        group = "com.fasterxml.jackson.module",
-        name = "jackson-module-kotlin",
-        version = Lib.JACKSON
-    )
-    implementation(
-        group = "com.fasterxml.jackson.dataformat",
-        name = "jackson-dataformat-yaml",
-        version = Lib.JACKSON
-    )
-    implementation(group = "org.antlr", name = "ST4", version = Lib.STRING_TEMPLATE)
+    implementation(libs.cfg4k.core)
+    implementation(libs.cfg4k.yaml)
+
+    implementation(libs.jackson.databind)
+    implementation(libs.jackson.kotlin)
+    implementation(libs.jackson.yaml)
+
+    implementation(libs.antlr)
 
     // Vertx
-    implementation(group = "io.vertx", name = "vertx-web", version = Lib.VERTX)
-    implementation(group = "io.vertx", name = "vertx-lang-kotlin", version = Lib.VERTX) {
+    implementation(libs.vertx.web)
+    implementation(libs.vertx.kotlin) {
         exclude(group = "org.jetbrains.kotlin")
     }
 
     // Dependency injection
-    implementation(
-        group = "com.google.dagger",
-        name = "dagger",
-        version = Lib.DAGGER
-    )
-    kapt(
-        group = "com.google.dagger",
-        name = "dagger-compiler",
-        version = Lib.DAGGER
-    )
+    implementation(libs.dagger.lib)
+    kapt(libs.dagger.compiler)
 
-    testRuntimeOnly(
-        group = "org.junit.jupiter",
-        name = "junit-jupiter-engine",
-        version = Lib.JUNIT
-    )
-    testImplementation(
-        group = "org.junit.jupiter",
-        name = "junit-jupiter-api",
-        version = Lib.JUNIT
-    )
-    testImplementation(group = "io.vertx", name = "vertx-junit5", version = Lib.VERTX)
+    testRuntimeOnly(libs.junit.engine)
+    testImplementation(libs.junit.api)
+    testImplementation(libs.junit.vertx)
 }
 
 tasks {
@@ -126,17 +94,19 @@ tasks {
     dependencyUpdates {
         rejectVersionIf {
             val version = candidate.version
-            isUnstable(version, currentVersion)
+            isUnstable(version, currentVersion) || isWrongPlatform(version, currentVersion)
         }
     }
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
 }
 
 repositories {
+    mavenCentral()
     jcenter()
 }
 
@@ -162,4 +132,21 @@ spotless {
         lineEndings = LineEnding.UNIX
         endWithNewline()
     }
+}
+
+
+fun isUnstable(version: String, currentVersion: String): Boolean {
+    val lowerVersion = version.toLowerCase()
+    val lowerCurrentVersion = currentVersion.toLowerCase()
+    return listOf(
+        "alpha",
+        "beta",
+        "rc",
+        "m",
+        "eap"
+    ).any { it in lowerVersion && it !in lowerCurrentVersion }
+}
+
+fun isWrongPlatform(version: String, currentVersion: String): Boolean {
+    return "android" in currentVersion && "android" !in version
 }
