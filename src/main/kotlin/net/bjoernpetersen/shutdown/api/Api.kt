@@ -26,7 +26,10 @@ class Api @Inject constructor(
             logger.info { "Binding server on port ${serverConfig.port}" }
 
             sequenceOf(DatabindCodec.mapper(), DatabindCodec.prettyMapper()).forEach {
-                it.registerModule(KotlinModule())
+                it.registerModule(
+                    KotlinModule.Builder()
+                        .build()
+                )
             }
 
             val server = vertx.createHttpServer(
