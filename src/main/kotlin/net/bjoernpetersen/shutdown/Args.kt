@@ -15,7 +15,7 @@ class Args : CliktCommand() {
     private val logger = KotlinLogging.logger { }
 
     val root: Path by option(help = "Root directory for config files")
-        .path(exists = true, fileOkay = false, readable = true)
+        .path(mustExist = true, canBeFile = false, mustBeReadable = true)
         .default(Paths.get("."), "Working directory")
 
     override fun run() {

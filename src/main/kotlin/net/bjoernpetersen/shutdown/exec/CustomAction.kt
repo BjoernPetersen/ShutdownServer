@@ -25,7 +25,10 @@ sealed class CustomAction {
 
     companion object {
         val MAPPER = ObjectMapper(YAMLFactory()).apply {
-            registerModule(KotlinModule())
+            registerModule(
+                KotlinModule.Builder()
+                    .build()
+            )
             registerModule(CustomActionModule())
         }
     }
@@ -52,7 +55,7 @@ data class CmdAction(
             val output = StringBuilder()
             while (process.isAlive) {
                 process.inputStream.bufferedReader().forEachLine {
-                    output.appendln(it)
+                    output.appendLine(it)
                 }
             }
             val resultCode = if (ignoreExitCode || process.exitValue() == 0) {
@@ -111,7 +114,7 @@ data class PwshAction(
             val output = StringBuilder()
             while (process.isAlive) {
                 process.inputStream.bufferedReader().forEachLine {
-                    output.appendln(it)
+                    output.appendLine(it)
                 }
             }
             val resultCode = if (ignoreExitCode || process.exitValue() == 0) {
