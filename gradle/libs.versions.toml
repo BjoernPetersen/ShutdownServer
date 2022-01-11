@@ -3,7 +3,7 @@ cfg4k = "0.9.41"
 dagger = "2.40.5"
 jackson = "2.13.1"
 junit = "5.8.2"
-kotlin = "1.4.32"
+kotlin = "1.6.10"
 slf4j = "1.8.0-beta4"
 vertx = "3.9.12"
 
