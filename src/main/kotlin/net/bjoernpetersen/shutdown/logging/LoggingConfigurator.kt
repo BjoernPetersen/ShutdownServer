@@ -7,4 +7,5 @@ import java.io.File
 class LoggingConfigurator : Configurator by LoggingConfiguratorDelegate(
     Level.INFO,
     Level.INFO,
-    File("shutdownserver.log"))
+    File("shutdownserver.log")
+)

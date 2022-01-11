@@ -2,9 +2,9 @@ package net.bjoernpetersen.shutdown.api
 
 import io.vertx.core.Handler
 import io.vertx.ext.web.RoutingContext
-import javax.inject.Inject
 import net.bjoernpetersen.shutdown.ServerConfig
 import net.bjoernpetersen.shutdown.decodeBase64
+import javax.inject.Inject
 
 class AuthHandler @Inject constructor(
     serverConfig: ServerConfig

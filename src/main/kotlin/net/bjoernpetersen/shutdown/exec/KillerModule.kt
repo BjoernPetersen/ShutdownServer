@@ -2,9 +2,9 @@ package net.bjoernpetersen.shutdown.exec
 
 import dagger.Module
 import dagger.Provides
+import mu.KotlinLogging
 import java.io.File
 import javax.inject.Singleton
-import mu.KotlinLogging
 
 @Module
 class KillerModule(val override: Killer? = null) {

@@ -8,17 +8,17 @@ import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.HashMap
-import javax.inject.Inject
-import kotlin.streams.asSequence
 import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.Args
 import net.bjoernpetersen.shutdown.exec.ActionResult
 import net.bjoernpetersen.shutdown.exec.CustomAction
 import net.bjoernpetersen.shutdown.exec.customEndpoint
 import org.stringtemplate.v4.misc.MultiMap
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.HashMap
+import javax.inject.Inject
+import kotlin.streams.asSequence
 
 class CustomManager @Inject constructor(
     private val args: Args
