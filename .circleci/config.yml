@@ -79,7 +79,7 @@ jobs:
 
   markdown_lint:
     docker:
-      - image: 06kellyjac/markdownlint-cli:0.13.0-alpine
+      - image: 06kellyjac/markdownlint-cli:0.28.1-alpine
     steps:
       - checkout
       - run: markdownlint README.md
