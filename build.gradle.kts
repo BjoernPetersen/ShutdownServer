@@ -27,7 +27,7 @@ dependencies {
     implementation(libs.logback)
 
     // Working around kapt bug https://youtrack.jetbrains.com/issue/KT-35721
-    compileOnly("org.jetbrains:annotations:19.0.0")
+    compileOnly("org.jetbrains:annotations:23.0.0")
 
     // CLI args
     implementation(libs.clikt)
