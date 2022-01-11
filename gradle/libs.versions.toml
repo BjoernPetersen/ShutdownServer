@@ -34,4 +34,4 @@ jackson = ["jackson-databind", "jackson-dataformat-yaml", "jackson-kotlin"]
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version = "0.10.1" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "5.2.0" }
-spotless = { id = "com.diffplug.spotless", version = "6.1.2" }
+spotless = { id = "com.diffplug.gradle.spotless", version = "3.28.1" }
