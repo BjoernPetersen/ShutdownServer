@@ -3,6 +3,6 @@ test_task:
     image: openjdk:8-jdk-slim
   gradle_cache:
     folder: ~/.gradle
-    fingerprint_script: cat build.gradle.kts buildSrc/src/main/kotlin/Plugin.kt buildSrc/src/main/kotlin/Lib.kt
+    fingerprint_script: cat build.gradle.kts gradle/libs.versions.toml
     populate_script: ./gradlew dependencies
   test_script: ./gradlew test
