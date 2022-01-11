@@ -32,6 +32,6 @@ cfg4k = ["cfg4k-core", "cfg4k-yaml"]
 jackson = ["jackson-databind", "jackson-dataformat-yaml", "jackson-kotlin"]
 
 [plugins]
-dokka = { id = "org.jetbrains.dokka", version = "0.10.1" }
+dokka = { id = "org.jetbrains.dokka", version = "1.6.10" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "5.2.0" }
 spotless = { id = "com.diffplug.gradle.spotless", version = "3.28.1" }
