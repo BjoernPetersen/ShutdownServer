@@ -16,7 +16,7 @@ plugins {
 version = "7.0.0-SNAPSHOT"
 
 application {
-    mainClassName = "net.bjoernpetersen.shutdown.Main"
+    mainClass.set("net.bjoernpetersen.shutdown.Main")
 }
 
 dependencies {
