@@ -7,9 +7,9 @@ import io.vertx.core.http.HttpServerOptions
 import io.vertx.core.json.jackson.DatabindCodec
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.BodyHandler
-import javax.inject.Inject
 import mu.KotlinLogging
 import net.bjoernpetersen.shutdown.ServerConfig
+import javax.inject.Inject
 
 class Api @Inject constructor(
     private val serverConfig: ServerConfig,
