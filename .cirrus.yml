@@ -1,6 +1,6 @@
 test_task:
   container:
-    image: openjdk:8-jdk-slim
+    image: openjdk:11-jdk-slim
   gradle_cache:
     folder: ~/.gradle
     fingerprint_script: cat build.gradle.kts gradle/libs.versions.toml
