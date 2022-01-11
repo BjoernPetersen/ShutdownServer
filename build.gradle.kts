@@ -1,16 +1,16 @@
+@file:Suppress("UnstableApiUsage")
+
 import com.diffplug.spotless.LineEnding
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.github.ben-manes.versions") version Plugin.VERSIONS
-    id("com.diffplug.gradle.spotless") version Plugin.SPOTLESS
-
     application
-    kotlin("jvm") version Plugin.KOTLIN
-    kotlin("kapt") version Plugin.KOTLIN
-    id("org.jetbrains.dokka") version Plugin.DOKKA
-    id("com.github.johnrengelman.shadow") version Plugin.SHADOW_JAR
+    kotlin("jvm") version libs.versions.kotlin
+    kotlin("kapt") version libs.versions.kotlin
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.shadow)
 
     idea
 }
@@ -23,80 +23,43 @@ application {
 
 dependencies {
     // Basics
-    implementation(kotlin("stdlib-jdk8", version = Lib.KOTLIN))
-    implementation(
-        group = "io.github.microutils",
-        name = "kotlin-logging",
-        version = Lib.KOTLIN_LOGGING
-    )
-    implementation(group = "org.slf4j", name = "slf4j-api", version = Lib.SLF4J)
-    implementation(group = "ch.qos.logback", name = "logback-classic", version = Lib.LOGBACK)
+    implementation(kotlin("stdlib-jdk8", version = libs.versions.kotlin.get()))
+    implementation(libs.kotlin.logging)
+    implementation(libs.slf4j.api)
+    implementation(libs.logback)
 
     // Working around kapt bug https://youtrack.jetbrains.com/issue/KT-35721
     compileOnly("org.jetbrains:annotations:19.0.0")
 
     // CLI args
-    implementation(
-        group = "com.github.ajalt",
-        name = "clikt",
-        version = Lib.CLIKT
-    )
+    implementation(libs.clikt)
 
     // Config
-    implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-core", version = Lib.CFG4K)
-    implementation(group = "com.jdiazcano.cfg4k", name = "cfg4k-yaml", version = Lib.CFG4K)
-    implementation(kotlin("reflect", version = Lib.KOTLIN))
-    implementation(
-        group = "com.fasterxml.jackson.core",
-        name = "jackson-databind",
-        version = Lib.JACKSON
-    )
-    implementation(
-        group = "com.fasterxml.jackson.module",
-        name = "jackson-module-kotlin",
-        version = Lib.JACKSON
-    )
-    implementation(
-        group = "com.fasterxml.jackson.dataformat",
-        name = "jackson-dataformat-yaml",
-        version = Lib.JACKSON
-    )
-    implementation(group = "org.antlr", name = "ST4", version = Lib.STRING_TEMPLATE)
+    implementation(libs.bundles.cfg4k)
+    implementation(kotlin("reflect", version = libs.versions.kotlin.get()))
+    implementation(libs.bundles.jackson)
+    implementation(libs.stringtemplate)
 
     // Vertx
-    implementation(group = "io.vertx", name = "vertx-web", version = Lib.VERTX)
-    implementation(group = "io.vertx", name = "vertx-lang-kotlin", version = Lib.VERTX) {
+    implementation(libs.vertx.web)
+    implementation(libs.vertx.kotlin) {
         exclude(group = "org.jetbrains.kotlin")
     }
 
     // Dependency injection
-    implementation(
-        group = "com.google.dagger",
-        name = "dagger",
-        version = Lib.DAGGER
-    )
-    kapt(
-        group = "com.google.dagger",
-        name = "dagger-compiler",
-        version = Lib.DAGGER
-    )
+    implementation(libs.dagger.runtime)
+    kapt(libs.dagger.compiler)
 
-    testRuntimeOnly(
-        group = "org.junit.jupiter",
-        name = "junit-jupiter-engine",
-        version = Lib.JUNIT
-    )
-    testImplementation(
-        group = "org.junit.jupiter",
-        name = "junit-jupiter-api",
-        version = Lib.JUNIT
-    )
-    testImplementation(group = "io.vertx", name = "vertx-junit5", version = Lib.VERTX)
+    testRuntimeOnly(libs.junit.engine)
+    testImplementation(libs.junit.api)
+    testImplementation(libs.vertx.junit)
 }
 
 tasks {
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
     }
 
     withType<Test> {
@@ -122,13 +85,6 @@ tasks {
             }
         }
     }
-
-    dependencyUpdates {
-        rejectVersionIf {
-            val version = candidate.version
-            isUnstable(version, currentVersion)
-        }
-    }
 }
 
 java {
@@ -137,6 +93,8 @@ java {
 }
 
 repositories {
+    mavenCentral()
+    // TODO: required for cfg4k
     jcenter()
 }
 
