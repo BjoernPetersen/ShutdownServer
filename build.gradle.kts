@@ -1,14 +1,12 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.diffplug.spotless.LineEnding
-import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
     kotlin("jvm") version libs.versions.kotlin
     kotlin("kapt") version libs.versions.kotlin
-    alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
     alias(libs.plugins.shadow)
 
@@ -70,12 +68,6 @@ tasks {
         from(project.projectDir) {
             include("LICENSE")
         }
-    }
-
-    "dokka"(DokkaTask::class) {
-        // TODO maybe switch to javadoc (or another) format
-        outputFormat = "html"
-        outputDirectory = "$buildDir/javadoc"
     }
 
     "processResources"(ProcessResources::class) {
