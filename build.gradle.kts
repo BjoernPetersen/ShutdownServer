@@ -13,7 +13,7 @@ plugins {
     idea
 }
 
-version = "7.0.0-SNAPSHOT"
+version = "7.0.0"
 
 application {
     mainClass.set("net.bjoernpetersen.shutdown.Main")
