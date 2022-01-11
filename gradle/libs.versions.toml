@@ -10,7 +10,7 @@ vertx = "3.9.0"
 [libraries]
 cfg4k-core = { module = "com.jdiazcano.cfg4k:cfg4k-core", version.ref = "cfg4k" }
 cfg4k-yaml = { module = "com.jdiazcano.cfg4k:cfg4k-yaml", version.ref = "cfg4k" }
-clikt = { module = "com.github.ajalt:clikt", version = "2.4.0" }
+clikt = { module = "com.github.ajalt:clikt", version = "2.8.0" }
 dagger-runtime = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 jackson-databind = {module = "com.fasterxml.jackson.core:jackson-databind", version.ref="jackson"}
