@@ -5,7 +5,7 @@ jackson = "2.13.1"
 junit = "5.8.2"
 kotlin = "1.6.10"
 slf4j = "1.8.0-beta4"
-vertx = "3.9.12"
+vertx = "3.9.13"
 
 [libraries]
 cfg4k-core = { module = "com.jdiazcano.cfg4k:cfg4k-core", version.ref = "cfg4k" }
