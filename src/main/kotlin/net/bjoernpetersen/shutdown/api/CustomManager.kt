@@ -76,8 +76,9 @@ class CustomManager @Inject constructor(
     }
 
     private fun MutableMap<String, Any>.putBodyValues(ctx: RoutingContext) {
-        if (ctx.body.length() > 0)
+        if (ctx.body.length() > 0) {
             put("body", BodyConverter.toMap(ctx.bodyAsJson))
+        }
     }
 
     private fun bodyful(ctx: RoutingContext, actions: List<CustomAction>) {
@@ -118,6 +119,7 @@ class CustomManager @Inject constructor(
                             .endNullable(result.message)
                     } else {
                         val message = result.message
+
                         @Suppress("UNCHECKED_CAST")
                         val outputs = (env["output"] as? Map<String, Any>)
                             ?.toMutableMap() ?: HashMap()
