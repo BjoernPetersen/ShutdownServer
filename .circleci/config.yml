@@ -3,7 +3,7 @@ version: 2.1
 executors:
   jdk:
     docker:
-      - image: openjdk:11-jdk-slim
+      - image: openjdk:11.0.16-jdk-slim
     environment:
       GRADLE_OPTS: -Dorg.gradle.daemon=false
 
