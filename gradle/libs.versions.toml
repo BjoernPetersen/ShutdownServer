@@ -4,7 +4,7 @@ dagger = "2.43.2"
 jackson = "2.13.4"
 junit = "5.9.0"
 kotlin = "1.6.10"
-slf4j = "1.8.0-beta4"
+slf4j = "2.0.7"
 vertx = "3.9.13"
 
 [libraries]
