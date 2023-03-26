@@ -633,6 +633,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  win32:
+    dependency: "direct main"
+    description:
+      name: win32
+      sha256: "5cdbe09a75b5f4517adf213c68aaf53ffa162fadf54ba16f663f94f3d2664a56"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.1"
   yaml:
     dependency: transitive
     description:

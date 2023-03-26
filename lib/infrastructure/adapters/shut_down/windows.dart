@@ -1,88 +1,122 @@
 import 'dart:ffi' as ffi;
 
+import 'package:ffi/ffi.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shutdownserver/application/ports/shutdown_access.dart';
+import 'package:win32/win32.dart';
 
-typedef GetLastErrorC = ffi.Uint32 Function();
-typedef GetLastErrorDart = int Function();
-typedef GetCurrentProcessC = ffi.Pointer Function();
-typedef GetCurrentProcessDart = ffi.Pointer Function();
-
-typedef OpenProcessTokenC = ffi.Bool Function(
-  ffi.Pointer,
-  ffi.Uint32,
-  ffi.Pointer,
-);
-typedef OpenProcessTokenDart = bool Function(
-  ffi.Pointer processHandle,
-  int desiredAccess,
-  ffi.Pointer tokenHandle,
-);
-
-typedef ShutDownC = ffi.Bool Function(
-  ffi.Pointer,
-  ffi.Pointer,
-  ffi.Uint32,
-  ffi.Bool,
-  ffi.Bool,
-  ffi.Uint32,
-);
-typedef ShutDownDart = bool Function(
-  ffi.Pointer lpMachineName,
-  ffi.Pointer lpMessage,
-  int dwTimeout,
-  bool bForceAppsClosed,
-  bool bRebootAfterShutdown,
-  int dwReason,
-);
+part 'windows.native.dart';
 
 @Injectable(as: ShutdownAccess)
 class WindowsShutdownAccess implements ShutdownAccess {
-  late final GetCurrentProcessDart _getCurrentProcess;
-  late final GetLastErrorDart _getLastError;
-
-  late final OpenProcessTokenDart _openProcessToken;
-  late final ShutDownDart _shutDown;
+  late final GetLastError _getLastError;
+  late final LookupPrivilegeValue _lookupPrivilegeValue;
+  late final AdjustTokenPrivileges _adjustTokenPrivileges;
 
   WindowsShutdownAccess() {
-    final kernel = ffi.DynamicLibrary.open('Kernel32.dll');
-    _getCurrentProcess =
-        kernel.lookupFunction<GetCurrentProcessC, GetCurrentProcessDart>(
-      'GetCurrentProcess',
+    final advapi = ffi.DynamicLibrary.open('Advapi32.dll');
+    _adjustTokenPrivileges =
+        advapi.lookupFunction<AdjustTokenPrivilegesC, AdjustTokenPrivileges>(
+      'AdjustTokenPrivileges',
     );
-    _getLastError = kernel.lookupFunction<GetLastErrorC, GetLastErrorDart>(
-      'GetLastError',
+    _lookupPrivilegeValue =
+        advapi.lookupFunction<LookupPrivilegeValueC, LookupPrivilegeValue>(
+      'LookupPrivilegeValueW',
     );
 
-    final advapi = ffi.DynamicLibrary.open('Advapi32.dll');
-    _openProcessToken =
-        advapi.lookupFunction<OpenProcessTokenC, OpenProcessTokenDart>(
-      'OpenProcessToken',
-    );
-    _shutDown = advapi.lookupFunction<ShutDownC, ShutDownDart>(
-      'InitiateSystemShutdownExW',
+    final kernel = ffi.DynamicLibrary.open('Kernel32.dll');
+    _getLastError = kernel.lookupFunction<GetLastErrorC, GetLastError>(
+      'GetLastError',
     );
   }
 
+  void _runChecked(int Function() action) {
+    final result = action();
+    if (result == 0) {
+      final errorCode = _getLastError();
+      throw Exception(
+        'Could not perform action. Got error code $errorCode',
+      );
+    }
+  }
+
   void ensurePrivileges() {
-    final currentProcess = _getCurrentProcess();
-    final token = ffi.Pointer;
+    final currentProcess = GetCurrentProcess();
+
+    final luidPointer = calloc<LUID>();
+    final tokenPointer = calloc<ffi.IntPtr>();
+    final tokenPrivileges = calloc<TokenPrivileges>();
+
+    try {
+      _runChecked(
+        () => OpenProcessToken(
+          currentProcess,
+          TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY,
+          tokenPointer,
+        ),
+      );
+      _runChecked(
+        () => _lookupPrivilegeValue(
+          ffi.nullptr,
+          'SeShutdownPrivilege'.toNativeUtf16(),
+          luidPointer,
+        ),
+      );
+
+      tokenPrivileges.ref.PrivilegeCount = 1;
+      tokenPrivileges.ref.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+      tokenPrivileges.ref.Privileges[0].Luid = luidPointer;
+
+      final result = _adjustTokenPrivileges(
+        tokenPointer,
+        false,
+        tokenPrivileges,
+        0,
+        ffi.nullptr,
+        ffi.nullptr,
+      );
+
+      if (result != ERROR_SUCCESS) {
+        throw Exception('Could not adjust privileges, got code $result');
+      }
+    } finally {
+      free(tokenPointer);
+      free(tokenPrivileges);
+      free(luidPointer);
+    }
   }
 
   @override
   Future<void> shutDown(Duration delay) async {
-    final result = _shutDown(
+    ensurePrivileges();
+
+    final result = InitiateShutdown(
       ffi.nullptr,
       ffi.nullptr,
       delay.inSeconds,
-      false,
-      false,
-      0x00040000,
+      0x208,
+      0x40000,
     );
 
-    if (!result) {
-      final errorCode = _getLastError();
-      throw Exception('Could not initiate shutdown, got error code $errorCode');
+    switch (result) {
+      case ERROR_SUCCESS:
+        return;
+      case ERROR_ACCESS_DENIED:
+        throw Exception('ERROR_ACCESS_DENIED');
+      case ERROR_BAD_NETPATH:
+        throw Exception('ERROR_BAD_NETPATH');
+      case ERROR_INVALID_FUNCTION:
+        throw Exception('ERROR_INVALID_FUNCTION');
+      case ERROR_INVALID_PARAMETER:
+        throw Exception('ERROR_INVALID_PARAMETER');
+      case ERROR_SHUTDOWN_IN_PROGRESS:
+        throw Exception('ERROR_SHUTDOWN_IN_PROGRESS');
+      case ERROR_SHUTDOWN_IS_SCHEDULED:
+        throw Exception('ERROR_SHUTDOWN_IS_SCHEDULED');
+      case ERROR_SHUTDOWN_USERS_LOGGED_ON:
+        throw Exception('ERROR_SHUTDOWN_USERS_LOGGED_ON');
+      default:
+        throw Exception('Unknown result code: $result');
     }
   }
 }
