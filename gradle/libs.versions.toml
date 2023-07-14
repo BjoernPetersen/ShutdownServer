@@ -1,6 +1,6 @@
 [versions]
 cfg4k = "0.9.41"
-dagger = "2.43.2"
+dagger = "2.47"
 jackson = "2.13.4"
 junit = "5.9.0"
 kotlin = "1.6.10"
