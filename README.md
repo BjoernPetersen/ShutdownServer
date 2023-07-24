@@ -2,6 +2,8 @@
 
 Server program providing HTTP endpoints to shut down and reboot the machine and more.
 
+**Note:** this will probably be rewritten with a smaller scope, and in a statically compiled language. Until then, this project won't receive any updates. 
+
 ## Installation
 
 The easiest way to install and use the program is to install it via [scoop](https://scoop.sh/):
