@@ -1,6 +1,6 @@
 {
   "extends": [
     "github>OpenAlcoholics/renovate-config"
-  ]
+  ],
   "enabled": false
 }
