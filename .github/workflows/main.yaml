@@ -8,22 +8,32 @@ on:
 jobs:
   format-check:
     runs-on: ubuntu-latest
-    container:
-      image: dart:2.19
     steps:
       - uses: actions/checkout@v3
+      - uses: asdf-vm/actions/install@v2
       - name: Dart format check
         run: dart format --set-exit-if-changed --output=none lib test bin
 
   lint:
     runs-on: ubuntu-latest
-    container:
-      image: dart:2.19
     steps:
       - uses: actions/checkout@v3
+      - uses: asdf-vm/actions/install@v2
       - name: Get dependencies
         run: dart pub get
       - name: Code generation
         run: dart run build_runner build
       - name: Dart analyze
         run: dart analyze --fatal-infos
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: asdf-vm/actions/install@v2
+      - name: Get dependencies
+        run: dart pub get
+      - name: Code generation
+        run: dart run build_runner build
+      - name: Dart test
+        run: dart test
