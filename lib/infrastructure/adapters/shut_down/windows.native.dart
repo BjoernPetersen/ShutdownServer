@@ -40,13 +40,13 @@ typedef AdjustTokenPrivileges = int Function(
 typedef GetLastErrorC = ffi.Uint32 Function();
 typedef GetLastError = int Function();
 
-class LuidAndAttributes extends ffi.Struct {
+final class LuidAndAttributes extends ffi.Struct {
   external ffi.Pointer<LUID> Luid;
   @ffi.Uint32()
   external int Attributes;
 }
 
-class TokenPrivileges extends ffi.Struct {
+final class TokenPrivileges extends ffi.Struct {
   @ffi.Uint32()
   external int PrivilegeCount;
 

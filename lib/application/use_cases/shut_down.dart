@@ -19,7 +19,7 @@ class ShutDown {
     try {
       await _shutdownAccess.shutDown(_shutdownDelay);
     } catch (e) {
-      _logger.e('Could not schedule shutdown', e);
+      _logger.e('Could not schedule shutdown', error: e);
       rethrow;
     }
 
