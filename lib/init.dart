@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shutdownserver/init.config.dart';
+import 'package:shutdownserver/platform.dart';
 
 @InjectableInit(
   throwOnMissingDependencies: true,
@@ -10,6 +11,9 @@ import 'package:shutdownserver/init.config.dart';
 Future<void> initialized<T extends Object>(
   FutureOr<void> Function(T) withT,
 ) async {
-  final getIt = GetIt.asNewInstance().init();
+  final platform = Platform.determine();
+  final getIt = GetIt.asNewInstance().init(
+    environment: platform.environment.name,
+  );
   await withT(getIt());
 }

@@ -4,7 +4,7 @@ import 'package:shutdownserver/application/ports/shutdown_access.dart';
 import 'package:shutdownserver/config.dart';
 
 @injectable
-class ShutDown {
+final class ShutDown {
   final Logger _logger;
   final ShutdownAccess _shutdownAccess;
   final Duration _shutdownDelay;

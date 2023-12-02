@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 @injectable
-class CancelShutdown {
+final class CancelShutdown {
   Future<void> call() async {
     // TODO
   }

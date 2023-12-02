@@ -3,10 +3,12 @@ import 'dart:ffi' as ffi;
 import 'package:ffi/ffi.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shutdownserver/application/ports/shutdown_access.dart';
+import 'package:shutdownserver/platform.dart';
 import 'package:win32/win32.dart';
 
 part 'windows.native.dart';
 
+@windowsEnv
 @Injectable(as: ShutdownAccess)
 class WindowsShutdownAccess implements ShutdownAccess {
   late final GetLastError _getLastError;
